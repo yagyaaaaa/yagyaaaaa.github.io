@@ -286,12 +286,44 @@
             }, 80);
         });
 
-        // REBIRTH LOGIC
-        secretBtn.addEventListener('click', () => {
+        // --- NEW REBIRTH LOGIC (THE LOGIN SYSTEM) ---
+secretBtn.addEventListener('click', () => {
+    // 1. The Prompt
+    let userID = prompt("IDENTIFY YOURSELF (Enter User ID):");
+    
+    // 2. The Database (Edit this list with your friends' names)
+    // Format: "username": "password"
+    const authorizedUsers = {
+        "yagya": "admin001",
+        "mom": "love123",
+        "bestie": "pizza99",
+        "guest": "12345" 
+    };
+
+    // 3. The Check
+    if (authorizedUsers.hasOwnProperty(userID)) {
+        let password = prompt("ENTER PASSCODE FOR " + userID.toUpperCase() + ":");
+        
+        if (password === authorizedUsers[userID]) {
+            // SUCCESS - They go to the Safehouse
+            alert("ACCESS GRANTED. WELCOME TO THE BUNKER.");
+            window.location.href = "safehouse.html";
+        } else {
+            // WRONG PASSWORD
+            alert("INVALID PASSCODE. SECURITY ALERT TRIGGERED.");
+            location.reload(); // Restarts the whole scary sequence
+        }
+    } else {
+        // WRONG USERNAME - Or if they just want to see the portfolio
+        // If they type "skip" or nothing, they go to the main robot page
+        let choice = confirm("USER NOT FOUND. PROCEED AS GUEST?");
+        if (choice) {
             bloodScreen.style.display = 'none';
-            bgAudio.play(); // Resume music
+            bgAudio.play();
             mainContent.style.opacity = '1';
-        });
+        }
+    }
+});
 
     </script>
 </body>
