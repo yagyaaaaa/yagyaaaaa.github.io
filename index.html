@@ -3,54 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YagyaJodd | System Online</title>
+    <title>YagyaJodd | Player One</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0a0a;
-            color: #00ff41; /* Matrix Green/Cyberpunk style */
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #050505; /* Deep Black */
+            color: #fff;
+            font-family: 'Press Start 2P', cursive; /* The Arcade Font */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+
+        /* The CRT Scanline Effect Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
         }
-        p {
-            color: #a1a1a1;
-            font-size: 1.2rem;
+
+        /* The Robot Logo */
+        .robot-img {
+            width: 200px; /* Adjust size here */
+            max-width: 80%;
+            image-rendering: pixelated; /* Keeps pixels sharp */
+            animation: float 3s ease-in-out infinite;
         }
-        .status-box {
-            border: 1px solid #333;
-            padding: 20px 40px;
+
+        /* The Text Logo */
+        .text-logo-img {
+            width: 300px; /* Adjust size here */
+            max-width: 90%;
             margin-top: 20px;
-            background: #111;
+            image-rendering: pixelated;
         }
-        .blink {
-            animation: blinker 1s linear infinite;
+
+        /* The "Loading" Text */
+        .status {
+            color: #ff3366; /* Matches the red/pink logo */
+            margin-top: 40px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px #500018;
         }
-        @keyframes blinker {
-            50% { opacity: 0; }
+
+        /* Links/Buttons */
+        .links {
+            margin-top: 30px;
+            z-index: 11;
+        }
+        
+        .btn {
+            text-decoration: none;
+            color: #fff;
+            border: 2px solid #ff3366;
+            padding: 10px 20px;
+            font-size: 0.7rem;
+            transition: 0.2s;
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .btn:hover {
+            background: #ff3366;
+            color: #000;
+            box-shadow: 0 0 15px #ff3366;
+            cursor: pointer;
+        }
+
+        /* Animation Keyframes */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
         }
     </style>
 </head>
 <body>
 
-    <h1>YAGYAJODD<span class="blink">_</span></h1>
-    
-    <p>Medical AI Developer | Entrepreneur</p>
+    <div class="scanlines"></div>
 
-    <div class="status-box">
-        <p>SYSTEM STATUS: <strong>ONLINE</strong></p>
-        <p>CURRENT MISSION: <strong>BUILDING MKURE</strong></p>
+    <img src="robologo.png" alt="Robot Logo" class="robot-img">
+    <img src="yagya_jodd_textlogo.png" alt="Yagya Jodd" class="text-logo-img">
+
+    <p class="status">System Initialized...</p>
+
+    <div class="links">
+        <a href="https://github.com/yagyaaaaa" class="btn">ENTER GITHUB</a>
     </div>
 
 </body>
