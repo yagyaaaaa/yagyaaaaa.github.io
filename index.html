@@ -3,183 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YagyaJodd | SYSTEM FAILURE</title>
+    <title>YagyaJodd | FATAL ERROR</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-pink: #ff3366;
             --cyber-blue: #00f3ff;
+            --matrix-green: #0f0;
+            --blood-red: #8a0303;
+            --black: #050505;
         }
         body {
-            background-color: #050505;
+            background-color: var(--black);
             color: #fff;
             font-family: 'Press Start 2P', cursive;
             margin: 0;
             height: 100vh;
             overflow: hidden;
-        }
-
-        /* --- The Click-to-Start Overlay --- */
-        #overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 999;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            cursor: pointer;
-        }
-        #overlay p {
-            animation: flicker 2s infinite;
+            user-select: none; /* Prevents highlighting text */
         }
 
-        /* --- Main Layout --- */
-        .container {
-            display: flex;
-            height: 100vh;
-            align-items: center;
-            justify-content: space-around;
-            position: relative;
-            z-index: 2;
-            padding: 20px;
-            /* Hidden initially until enter click */
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        /* Left Column - The Robot */
-        .left-col {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Right Column - Text & Links */
-        .right-col {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
-            height: 80%;
-        }
-
-        /* --- CRT Scanline Effect --- */
+        /* --- CRT SCREEN LINES --- */
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             background-size: 100% 2px, 3px 100%;
             pointer-events: none;
-            z-index: 10;
+            z-index: 900;
         }
 
-        /* ====== FX 1: THE ROBOT CYBER GLITCH ====== */
-        .robot-glitch-container {
-            position: relative;
-            width: 500px;
-            max-width: 90vw;
-        }
-        .robot-img {
+        /* --- LAYOUT SYMMETRY --- */
+        .container {
+            display: flex;
             width: 100%;
-            display: block;
-            image-rendering: pixelated;
+            max-width: 1200px;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            opacity: 0; /* Hidden until reboot */
+            transition: opacity 2s ease-in;
         }
-        .robot-glitch-container::before,
-        .robot-glitch-container::after {
-            content: '';
-            position: absolute;
+
+        .left-col, .right-col {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Mobile Stack */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .right-col { justify-content: flex-start; margin-top: 20px;}
+            .robot-glitch-container { width: 250px !important; }
+            .text-logo-img { width: 220px !important; }
+        }
+
+        /* --- PHASE 1: START SCREEN --- */
+        #start-overlay {
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('robologo.png') no-repeat center center;
-            background-size: contain;
-            opacity: 0.5;
-            mix-blend-mode: hard-light;
-            image-rendering: pixelated;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
-        /* Cyan Shift */
-        .robot-glitch-container::before {
-            animation: cyber-glitch-anim 2s infinite linear alternate-reverse;
-            filter: drop-shadow(-2px 0 var(--cyber-blue));
+        .start-text { animation: blink 1s infinite; color: var(--cyber-blue); }
+
+        /* --- PHASE 2: LOADING BATTERY --- */
+        #loader-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        /* Pink Shift */
-        .robot-glitch-container::after {
-            animation: cyber-glitch-anim-2 3s infinite linear alternate;
-            filter: drop-shadow(2px 0 var(--neon-pink));
+        .battery-container {
+            width: 300px; height: 40px; border: 4px solid #fff; padding: 5px; position: relative;
+        }
+        .battery-container::after {
+            content: ''; position: absolute; right: -12px; top: 10px; width: 6px; height: 20px; background: #fff;
+        }
+        .battery-fill {
+            height: 100%; width: 0%;
+            background-image: repeating-linear-gradient(90deg, var(--matrix-green) 0px, var(--matrix-green) 15px, transparent 15px, transparent 20px);
+            transition: width 0.1s linear;
+        }
+        .loading-text { margin-top: 20px; color: var(--matrix-green); font-size: 0.8rem; }
+
+        /* Error State Styling */
+        .error-mode .battery-container { border-color: var(--neon-pink); animation: shake 0.5s infinite; }
+        .error-mode .battery-fill { background-image: repeating-linear-gradient(90deg, var(--neon-pink) 0px, var(--neon-pink) 15px, transparent 15px, transparent 20px); }
+        .error-mode .loading-text { color: var(--neon-pink); }
+
+        /* --- PHASE 3: THE DIGITAL HOMICIDE --- */
+        #flash-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0; pointer-events: none; z-index: 1001;
         }
 
-        @keyframes cyber-glitch-anim {
-            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 0); }
-            20% { clip-path: inset(60% 0 20% 0); transform: translate(2px, 0); }
-            40% { clip-path: inset(10% 0 50% 0); transform: translate(-2px, 0); }
-            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 0); }
-            80% { clip-path: inset(30% 0 70% 0); transform: translate(-2px, 0); }
-            100% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 0); }
+        #blood-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 0%; /* Starts empty */
+            background-color: var(--blood-red);
+            z-index: 998;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
         }
-        @keyframes cyber-glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, 0); }
-            30% { clip-path: inset(30% 0 20% 0); transform: translate(-2px, 0); }
-            60% { clip-path: inset(70% 0 10% 0); transform: translate(2px, 0); }
-            100% { clip-path: inset(20% 0 40% 0); transform: translate(-2px, 0); }
-        }
-
-
-        /* ====== FX 2: THE TEXT ELECTRICAL GLITCH ====== */
-        .text-logo-img {
-            width: 350px;
-            max-width: 90%;
-            image-rendering: pixelated;
-            animation: electrical-flicker 4s infinite step-end;
-            filter: brightness(0.8);
+        /* Pixelated Drop Animation */
+        .blood-anim {
+            animation: drip-down 0.5s steps(10) forwards;
         }
 
-        @keyframes electrical-flicker {
-            0%, 100% { opacity: 1; filter: brightness(1) drop-shadow(0 0 2px var(--neon-pink)); }
-            3% { opacity: 0.4; filter: brightness(0.5); }
-            6% { opacity: 1; filter: brightness(1.2) drop-shadow(0 0 5px #fff); }
-            7% { opacity: 0.4; filter: brightness(0.5); }
-            8% { opacity: 1; filter: brightness(1); }
-            50% { opacity: 1; }
-            52% { opacity: 0.2; filter: brightness(0.3); }
-            54% { opacity: 0.2; }
-            56% { opacity: 1; filter: brightness(1.2) drop-shadow(0 0 8px #fff); }
-            58% { opacity: 1; }
-            80% { opacity: 0.5; filter: brightness(0.6); }
-            82% { opacity: 1; }
-        }
-
-        .status {
-            color: var(--cyber-blue);
-            margin-top: 20px;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn {
-            margin-top: 20px;
-            text-decoration: none;
-            color: var(--neon-pink);
-            border: 2px solid var(--neon-pink);
-            padding: 10px 15px;
-            font-size: 0.6rem;
-            transition: 0.2s;
-            background: rgba(255, 51, 102, 0.1);
-        }
-        .btn:hover {
-            background: var(--neon-pink);
+        .death-text {
+            display: none; /* Hidden until blood fills */
+            text-align: center;
             color: #000;
-            box-shadow: 0 0 20px var(--neon-pink);
         }
+        .death-title { font-size: 2rem; margin-bottom: 20px; }
+        .death-sub { font-size: 0.8rem; opacity: 0.7; }
+        
+        /* THE SECRET BUTTON */
+        .secret-link {
+            color: #000; text-decoration: underline; cursor: help;
+        }
+        .secret-link:hover { color: #fff; background: #000; }
 
-        @media (max-width: 768px) {
-            .container { flex-direction: column; justify-content: center; }
-            .right-col { align-items: center; height: auto; margin-top: 30px; }
-            .robot-glitch-container { width: 300px; }
-            .text-logo-img { width: 250px; }
+        /* --- ASSETS ANIMATION --- */
+        .robot-glitch-container { position: relative; width: 400px; max-width: 90vw; }
+        .robot-img { width: 100%; display: block; image-rendering: pixelated; }
+        /* Glitch Layers */
+        .robot-glitch-container::before, .robot-glitch-container::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('robologo.png') no-repeat center center; background-size: contain;
+            opacity: 0.5; mix-blend-mode: hard-light; image-rendering: pixelated;
         }
+        .robot-glitch-container::before { animation: glitch-1 2s infinite linear alternate-reverse; filter: drop-shadow(-2px 0 var(--cyber-blue)); }
+        .robot-glitch-container::after { animation: glitch-2 3s infinite linear alternate; filter: drop-shadow(2px 0 var(--neon-pink)); }
+
+        .text-logo-img { width: 350px; max-width: 90%; image-rendering: pixelated; margin-bottom: 20px; animation: text-flicker 4s infinite; }
+        
+        .btn {
+            text-decoration: none; color: var(--neon-pink); border: 2px solid var(--neon-pink);
+            padding: 12px 20px; font-size: 0.7rem; background: rgba(255, 51, 102, 0.1); transition: 0.2s;
+        }
+        .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 20px var(--neon-pink); }
+
+        /* --- KEYFRAMES --- */
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes drip-down { 0% { height: 0%; } 100% { height: 100%; } }
+        @keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+        @keyframes shake { 0% { transform: translate(1px, 1px); } 20% { transform: translate(-3px, 0px); } 40% { transform: translate(1px, -1px); } 60% { transform: translate(-3px, 1px); } 80% { transform: translate(-1px, -1px); } }
+        @keyframes glitch-1 { 0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 0); } 100% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 0); } }
+        @keyframes glitch-2 { 0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, 0); } 100% { clip-path: inset(20% 0 40% 0); transform: translate(-2px, 0); } }
+        @keyframes text-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } 52% { opacity: 0.2; } 54% { opacity: 1; } }
+
     </style>
 </head>
 <body>
@@ -187,44 +180,119 @@
     <audio id="bg-audio" loop>
         <source src="electricbuzz.wav" type="audio/wav">
     </audio>
-
-    <div id="overlay">
-        <p>> INITIALIZE SYSTEM <</p>
-        <small>(Click anywhere)</small>
-    </div>
+    <audio id="sfx-laser">
+        <source src="lasershot.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="scanlines"></div>
+    <div id="flash-overlay"></div>
+
+    <div id="start-overlay">
+        <p class="start-text">> INITIALIZE <</p>
+    </div>
+
+    <div id="loader-overlay">
+        <div class="battery-container">
+            <div class="battery-fill" id="battery-fill"></div>
+        </div>
+        <p class="loading-text" id="loading-text">CHARGING...</p>
+    </div>
+
+    <div id="blood-screen">
+        <div class="death-text" id="death-text">
+            <h1 class="death-title">NO SIGNAL</h1>
+            <p class="death-sub">THERE IS <span class="secret-link" id="secret-btn">NOTHING</span> HERE FOR YOU.</p>
+        </div>
+    </div>
 
     <div class="container" id="main-content">
         <div class="left-col">
             <div class="robot-glitch-container">
-                <img src="robologo.png" alt="Robot Logo" class="robot-img">
+                <img src="robologo.png" alt="Robot" class="robot-img">
             </div>
         </div>
-
         <div class="right-col">
-            <img src="yagya_jodd_textlogo.png" alt="Yagya Jodd" class="text-logo-img">
-            <p class="status">/// CONNECTION UNSTABLE ///</p>
-            <a href="https://github.com/yagyaaaaa" class="btn">BYPASS FIREWALL</a>
+            <img src="yagya_jodd_textlogo.png" alt="Logo" class="text-logo-img">
+            <p style="color:var(--cyber-blue); font-size:0.7rem; margin-bottom:20px;">SYSTEM RESTORED</p>
+            <a href="https://github.com/yagyaaaaa" class="btn">ACCESS MAINFRAME</a>
         </div>
     </div>
 
     <script>
-        const overlay = document.getElementById('overlay');
+        // Elements
+        const startOverlay = document.getElementById('start-overlay');
+        const loaderOverlay = document.getElementById('loader-overlay');
+        const bloodScreen = document.getElementById('blood-screen');
+        const deathText = document.getElementById('death-text');
         const mainContent = document.getElementById('main-content');
-        const audio = document.getElementById('bg-audio');
+        const flash = document.getElementById('flash-overlay');
+        const secretBtn = document.getElementById('secret-btn');
+        
+        // Audio
+        const bgAudio = document.getElementById('bg-audio');
+        const laserSfx = document.getElementById('sfx-laser');
 
-        overlay.addEventListener('click', () => {
-            audio.play().catch(error => {
-                console.log("Audio blocked: ", error);
-            });
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                mainContent.style.opacity = '1';
-            }, 500);
+        // Logic
+        startOverlay.addEventListener('click', () => {
+            bgAudio.volume = 0.5;
+            bgAudio.play().catch(e => console.log(e));
+            
+            startOverlay.style.display = 'none';
+            loaderOverlay.style.display = 'flex';
+
+            // Battery Animation
+            let progress = 0;
+            const batteryFill = document.getElementById('battery-fill');
+            const loadingText = document.getElementById('loading-text');
+            const loaderContainer = document.getElementById('loader-overlay');
+
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 4) + 1;
+                if(progress > 99) progress = 99;
+
+                batteryFill.style.width = progress + '%';
+                loadingText.innerText = 'CHARGING: ' + progress + '%';
+
+                // THE CLIMAX (99%)
+                if(progress === 99) {
+                    clearInterval(interval);
+                    
+                    // 1. Fake Error
+                    loadingText.innerText = 'SYSTEM FAILURE';
+                    loaderContainer.classList.add('error-mode');
+                    
+                    // 2. Wait 1.5s then KILL
+                    setTimeout(() => {
+                        // Stop Music, Play Shot
+                        bgAudio.pause();
+                        bgAudio.currentTime = 0;
+                        laserSfx.volume = 1.0;
+                        laserSfx.play();
+
+                        // Visuals
+                        flash.style.animation = 'flash 0.2s forwards';
+                        loaderOverlay.style.display = 'none';
+                        
+                        // Blood Flood
+                        bloodScreen.classList.add('blood-anim');
+                        
+                        // Show Death Text after flood
+                        setTimeout(() => {
+                            deathText.style.display = 'block';
+                        }, 600);
+                        
+                    }, 1500);
+                }
+            }, 80);
         });
-    </script>
 
+        // REBIRTH LOGIC
+        secretBtn.addEventListener('click', () => {
+            bloodScreen.style.display = 'none';
+            bgAudio.play(); // Resume music
+            mainContent.style.opacity = '1';
+        });
+
+    </script>
 </body>
 </html>
