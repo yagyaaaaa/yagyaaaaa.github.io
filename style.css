@@ -3,7 +3,7 @@
     --neon-pink: #ff3366;
     --cyber-blue: #00f3ff;
     --blood-red: #8a0303;
-    --terminal-red: #ff3333; /* NEW: Bright Red for terminal */
+    --terminal-red: #ff3333;
     --black: #050505;
 }
 
@@ -14,101 +14,116 @@ body {
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     user-select: none;
 }
 
-/* --- UTILITIES --- */
-.scanlines {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 900;
+a { text-decoration: none; color: inherit; }
+
+/* --- THE 3D WIREFRAME ROOM (CSS Magic) --- */
+.cyber-grid {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background: 
+        linear-gradient(transparent 0%, rgba(0,0,0,1) 100%), /* Fade to black at bottom */
+        linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    transform: perspective(500px) rotateX(20deg) scale(1.5);
+    opacity: 0.6;
 }
 
-/* --- CONTAINERS --- */
-.container {
-    display: flex; width: 100%; max-width: 1200px; height: 100vh;
-    align-items: center; justify-content: center; position: relative; z-index: 2;
-    opacity: 0; transition: opacity 2s ease-in;
-}
-.left-col, .right-col { flex: 1; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-
-/* --- OVERLAYS --- */
-#start-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer;
-}
-.start-text { animation: blink 1s infinite; color: var(--cyber-blue); }
-
-#loader-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #000; z-index: 999; display: none; flex-direction: column; justify-content: center; align-items: center;
+/* --- WATERMARK --- */
+.watermark {
+    position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%);
+    font-size: 5rem; color: rgba(255, 255, 255, 0.03); white-space: nowrap; pointer-events: none; z-index: 1;
 }
 
-#blood-screen {
-    position: fixed; top: 0; left: 0; width: 100%; height: 0%;
-    background-color: var(--blood-red); z-index: 998;
-    display: flex; justify-content: center; align-items: center; flex-direction: column; overflow: hidden;
+/* --- THE SURFACE WORLD --- */
+#surface-world {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 100px 1fr;
+    width: 100%; max-width: 1400px; height: 100vh;
+    padding: 40px; box-sizing: border-box; position: relative; z-index: 10;
+    transition: opacity 1s ease-out;
 }
 
-/* --- THE SECURITY TERMINAL (RED THEME) --- */
-#security-terminal {
+/* 1. SECRET ZONE */
+.secret-zone { grid-column: 1; grid-row: 1; display: flex; align-items: flex-start; }
+.secret-btn-style {
+    border: 1px solid var(--terminal-red); color: var(--terminal-red);
+    background: rgba(50, 0, 0, 0.3); padding: 10px 15px; font-size: 0.6rem;
+    cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px;
+}
+.secret-btn-style:hover { background: var(--terminal-red); color: #000; box-shadow: 0 0 15px var(--terminal-red); }
+.mini-icon { width: 16px; height: 16px; image-rendering: pixelated; }
+
+/* 2. SOCIAL ZONE */
+.social-zone {
+    grid-column: 1; grid-row: 2; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 40px;
+}
+.holo-card {
+    width: 280px; padding: 20px; border: 2px solid var(--cyber-blue);
+    background: rgba(0, 243, 255, 0.05); color: var(--cyber-blue);
+    transform: skewX(-10deg); transition: 0.3s; cursor: pointer;
+    display: flex; align-items: center; gap: 20px;
+}
+.holo-content { transform: skewX(10deg); display: flex; align-items: center; gap: 15px; width: 100%; }
+
+.card-icon { width: 40px; height: 40px; image-rendering: pixelated; filter: drop-shadow(0 0 5px var(--cyber-blue)); }
+.card-text h2 { font-size: 1rem; margin: 0; }
+.card-text p { font-size: 0.5rem; margin: 5px 0 0 0; opacity: 0.7; }
+
+.holo-card:hover {
+    background: var(--cyber-blue); color: #000;
+    transform: skewX(-10deg) translateX(10px) scale(1.05);
+    box-shadow: 10px 10px 0px rgba(0, 243, 255, 0.2);
+}
+/* Invert icon color on hover so it stays visible against blue background */
+.holo-card:hover .card-icon { filter: brightness(0); }
+
+/* 3. BRAND ZONE */
+.brand-zone {
+    grid-column: 2; grid-row: 1 / span 2; border-left: 1px solid #333;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-left: 40px;
+}
+.robot-top { width: 200px; image-rendering: pixelated; animation: float 4s infinite ease-in-out; }
+.text-bottom { width: 250px; image-rendering: pixelated; opacity: 0.8; }
+
+/* --- HIDDEN LAYERS --- */
+#loader-overlay, #blood-screen, #security-terminal, #warning-modal { display: none; }
+
+/* Warning Modal */
+#warning-modal {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 90%; max-width: 400px;
-    background: #000; 
-    border: 2px solid var(--terminal-red); /* CHANGED TO RED */
-    padding: 20px; z-index: 2000; display: none;
-    box-shadow: 0 0 20px var(--terminal-red);
-    text-align: left;
+    width: 320px; background: #000; border: 2px solid var(--terminal-red);
+    padding: 20px; z-index: 2000; text-align: center;
+    box-shadow: 0 0 50px rgba(255, 0, 0, 0.4);
+    animation: pulse-red 1s infinite;
 }
-.terminal-header { color: var(--terminal-red); font-size: 0.8rem; margin-bottom: 20px; border-bottom: 1px solid var(--terminal-red); padding-bottom: 10px; }
-.input-group { margin-bottom: 15px; }
-.terminal-label { color: #fff; font-size: 0.6rem; display: block; margin-bottom: 5px; }
-.terminal-input {
-    width: 90%; background: #000; border: 1px solid #333; color: var(--terminal-red);
-    font-family: 'Press Start 2P'; font-size: 0.7rem; padding: 10px; outline: none;
-}
-.terminal-input:focus { border-color: var(--terminal-red); }
 
-.term-btn {
-    background: var(--terminal-red); color: #000; border: none; padding: 10px;
-    font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer; flex: 1; margin: 0 5px;
-}
-.term-btn:hover { background: #fff; }
-.guest-btn { background: #333; color: #fff; }
-.error-msg { color: #fff; background: var(--blood-red); font-size: 0.6rem; margin-top: 10px; padding: 5px; display: none; }
-
-/* --- ASSETS & ANIMATIONS --- */
+.scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06)); background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 900; }
+#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; flex-direction: column; justify-content: center; align-items: center; }
 .battery-container { width: 300px; height: 40px; border: 4px solid #fff; padding: 5px; position: relative; }
-.battery-container::after { content: ''; position: absolute; right: -12px; top: 10px; width: 6px; height: 20px; background: #fff; }
-.battery-fill { height: 100%; width: 0%; background-image: repeating-linear-gradient(90deg, #0f0 0px, #0f0 15px, transparent 15px, transparent 20px); transition: width 0.1s linear; }
-.loading-text { margin-top: 20px; color: #0f0; font-size: 0.8rem; }
-
+.battery-fill { height: 100%; width: 0%; background-image: repeating-linear-gradient(90deg, #0f0 0px, #0f0 15px, transparent 15px, transparent 20px); }
 .error-mode .battery-container { border-color: var(--neon-pink); animation: shake 0.5s infinite; }
 .error-mode .battery-fill { background-image: repeating-linear-gradient(90deg, var(--neon-pink) 0px, var(--neon-pink) 15px, transparent 15px, transparent 20px); }
-.error-mode .loading-text { color: var(--neon-pink); }
-
-.robot-img { width: 100%; display: block; image-rendering: pixelated; }
-.text-logo-img { width: 350px; max-width: 90%; image-rendering: pixelated; margin-bottom: 20px; animation: text-flicker 4s infinite; }
-.btn { text-decoration: none; color: var(--neon-pink); border: 2px solid var(--neon-pink); padding: 12px 20px; font-size: 0.7rem; background: rgba(255, 51, 102, 0.1); transition: 0.2s; }
-.btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 20px var(--neon-pink); }
-
+#blood-screen { position: fixed; top: 0; left: 0; width: 100%; height: 0%; background-color: var(--blood-red); z-index: 998; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
 .blood-anim { animation: drip-down 0.5s steps(10) forwards; }
-.death-text { display: none; text-align: center; color: #000; }
-.secret-link { color: #000; text-decoration: underline; cursor: help; }
-.secret-link:hover { color: #fff; background: #000; }
 
-@keyframes blink { 50% { opacity: 0; } }
-@keyframes drip-down { 0% { height: 0%; } 100% { height: 100%; } }
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
 @keyframes shake { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
-@keyframes text-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } 52% { opacity: 0.2; } 54% { opacity: 1; } }
+@keyframes drip-down { 0% { height: 0%; } 100% { height: 100%; } }
+@keyframes pulse-red { 0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); } 50% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.8); } 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); } }
 
-/* Mobile */
+/* MOBILE */
 @media (max-width: 900px) {
-    .container { flex-direction: column; }
-    .right-col { justify-content: flex-start; margin-top: 20px;}
-    .robot-glitch-container { width: 250px !important; }
-    .text-logo-img { width: 220px !important; }
+    #surface-world { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding: 20px; height: auto; overflow-y: auto; }
+    .brand-zone { grid-row: 1; grid-column: 1; border-left: none; border-bottom: 1px solid #333; padding: 0 0 20px 0; margin-bottom: 20px; }
+    .social-zone { grid-row: 2; grid-column: 1; }
+    .secret-zone { grid-row: 3; grid-column: 1; justify-content: center; margin-top: 50px; }
+    .watermark { font-size: 2rem; }
 }
