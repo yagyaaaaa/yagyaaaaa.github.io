@@ -1,93 +1,89 @@
-/* --- ASSETS --- */
-const surface = document.getElementById('surface-world');
-const warningModal = document.getElementById('warning-modal');
-const loaderOverlay = document.getElementById('loader-overlay');
+/* --- CONFIG --- */
+const inputField = document.getElementById('ai-input');
+const vizBars = document.querySelectorAll('.v-bar');
+const hudLayer = document.getElementById('hud-layer');
+const chaosLayer = document.getElementById('chaos-overlay');
 
-const bgAudio = document.getElementById('bg-audio');
-const laserSfx = document.getElementById('sfx-laser');
-const alarmSfx = document.getElementById('sfx-alarm');
+/* --- SOUNDS --- */
+const sfxHover = document.getElementById('sfx-hover');
+const sfxLaser = document.getElementById('sfx-laser');
+const sfxAlarm = document.getElementById('sfx-alarm');
 
-/* --- 1. SHOW WARNING (Play Alarm) --- */
-function showWarning() {
-    warningModal.style.display = 'block';
-    alarmSfx.volume = 0.3;
-    alarmSfx.play().catch(e => console.log("Audio blocked"));
-}
+/* --- AI VOICE LOGIC --- */
+inputField.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const text = inputField.value.toLowerCase();
+        inputField.value = ''; // Clear
+        processVoiceCommand(text);
+    }
+});
 
-function abortSequence() {
-    warningModal.style.display = 'none';
-    alarmSfx.pause();
-    alarmSfx.currentTime = 0;
-}
+function processVoiceCommand(cmd) {
+    let audioToPlay = null;
 
-/* --- 2. START THE CHAOS --- */
-function startChaos() {
-    // Stop Alarm, Hide Surface
-    alarmSfx.pause();
-    alarmSfx.currentTime = 0;
+    // KEYWORD MATCHING
+    if (cmd.includes('hello') || cmd.includes('hi')) {
+        audioToPlay = document.getElementById('voice-intro');
+    } else if (cmd.includes('japan') || cmd.includes('dream')) {
+        audioToPlay = document.getElementById('voice-japan');
+    }
     
-    warningModal.style.display = 'none';
-    surface.style.opacity = '0';
-    setTimeout(() => { surface.style.display = 'none'; }, 1000);
-
-    // Show Loader
-    loaderOverlay.style.display = 'flex';
-    bgAudio.volume = 0.5;
-    bgAudio.play().catch(e => console.log(e));
-
-    // Battery Logic
-    let progress = 0;
-    const batteryFill = document.getElementById('battery-fill');
-    const loadingText = document.getElementById('loading-text');
-
-    const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 5) + 2;
-        if (progress > 99) progress = 99;
+    // PLAY IF MATCH FOUND
+    if (audioToPlay) {
+        audioToPlay.currentTime = 0;
+        audioToPlay.play();
+        animateVisualizer(true);
         
-        batteryFill.style.width = progress + '%';
-        loadingText.innerText = 'OVERLOADING: ' + progress + '%';
-
-        if (progress === 99) {
-            clearInterval(interval);
-            loadingText.innerText = 'CRITICAL ERROR';
-            document.querySelector('.battery-container').style.borderColor = 'red';
-            
-            setTimeout(() => {
-                // THE KILL SHOT
-                bgAudio.pause();
-                laserSfx.play();
-                loaderOverlay.style.display = 'none';
-                
-                const bloodScreen = document.getElementById('blood-screen');
-                bloodScreen.style.display = 'flex';
-                bloodScreen.classList.add('blood-anim');
-
-                setTimeout(() => {
-                    document.getElementById('death-text').style.display = 'block';
-                }, 800);
-            }, 1500);
+        audioToPlay.onended = () => {
+            animateVisualizer(false);
         }
-    }, 50);
-}
-
-/* --- 3. TERMINAL LOGIC --- */
-function openTerminal() {
-    document.getElementById('security-terminal').style.display = 'block';
-    document.getElementById('input-pass').focus();
-}
-
-function checkLogin() {
-    const pass = document.getElementById('input-pass').value;
-    if (pass === "JODD_MODE" || pass === "jodd") {
-        window.location.href = "safehouse/";
-    } else {
-        const err = document.getElementById('term-error');
-        err.style.display = 'block';
-        setTimeout(() => { err.style.display = 'none'; }, 2000);
     }
 }
 
-// Allow "Enter" key for password
-document.getElementById('input-pass').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') checkLogin();
+function animateVisualizer(isActive) {
+    vizBars.forEach(bar => {
+        if (isActive) {
+            bar.style.animation = `sound-wave ${Math.random() * 0.5 + 0.2}s infinite alternate`;
+        } else {
+            bar.style.animation = 'none';
+            bar.style.height = '5px';
+        }
+    });
+}
+
+/* --- THE OVERRIDE SEQUENCE (Chaos) --- */
+function initiateOverride() {
+    // 1. Flash Warning
+    const confirmAction = confirm("WARNING: SYSTEM UNSTABLE. PROCEED?");
+    if (!confirmAction) return;
+
+    // 2. Kill UI
+    hudLayer.style.filter = "blur(10px) grayscale(100%)";
+    sfxAlarm.play();
+
+    // 3. Fake Loading
+    setTimeout(() => {
+        // 4. THE KILL SHOT
+        sfxAlarm.pause();
+        sfxLaser.play();
+        
+        hudLayer.style.display = 'none';
+        chaosLayer.style.display = 'flex';
+        
+        // 5. Redirect to Safehouse
+        setTimeout(() => {
+            window.location.href = "safehouse/";
+        }, 2000);
+
+    }, 1500);
+}
+
+/* --- VISUAL FX --- */
+// Add sound to card hovers
+document.querySelectorAll('.cyber-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+        sfxHover.volume = 0.2;
+        sfxHover.currentTime = 0;
+        sfxHover.play().catch(() => {}); // Ignore autoplay errors
+    });
 });
