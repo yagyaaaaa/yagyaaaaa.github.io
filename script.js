@@ -1,89 +1,95 @@
-/* --- CONFIG --- */
-const inputField = document.getElementById('ai-input');
-const vizBars = document.querySelectorAll('.v-bar');
-const hudLayer = document.getElementById('hud-layer');
-const chaosLayer = document.getElementById('chaos-overlay');
+/* --- ASSETS --- */
+const startOverlay = document.getElementById('start-overlay');
+const customModal = document.getElementById('custom-modal');
+const loaderOverlay = document.getElementById('loader-overlay');
+const bloodScreen = document.getElementById('blood-screen');
+const mainContent = document.getElementById('main-content');
+const terminal = document.getElementById('security-terminal');
 
-/* --- SOUNDS --- */
-const sfxHover = document.getElementById('sfx-hover');
-const sfxLaser = document.getElementById('sfx-laser');
-const sfxAlarm = document.getElementById('sfx-alarm');
+const bgAudio = document.getElementById('bg-audio');
+const laserSfx = document.getElementById('sfx-laser');
 
-/* --- AI VOICE LOGIC --- */
-inputField.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        const text = inputField.value.toLowerCase();
-        inputField.value = ''; // Clear
-        processVoiceCommand(text);
-    }
+/* --- 1. START --- */
+startOverlay.addEventListener('click', () => {
+    bgAudio.volume = 0.5;
+    bgAudio.play().catch(e => console.log(e));
+    startOverlay.style.display = 'none';
+    mainContent.style.opacity = '1';
 });
 
-function processVoiceCommand(cmd) {
-    let audioToPlay = null;
+/* --- 2. MODAL LOGIC --- */
+function openModal() {
+    customModal.style.display = 'flex';
+}
+function closeModal() {
+    customModal.style.display = 'none';
+}
 
-    // KEYWORD MATCHING
-    if (cmd.includes('hello') || cmd.includes('hi')) {
-        audioToPlay = document.getElementById('voice-intro');
-    } else if (cmd.includes('japan') || cmd.includes('dream')) {
-        audioToPlay = document.getElementById('voice-japan');
-    }
-    
-    // PLAY IF MATCH FOUND
-    if (audioToPlay) {
-        audioToPlay.currentTime = 0;
-        audioToPlay.play();
-        animateVisualizer(true);
+/* --- 3. CRASH SEQUENCE --- */
+function startCrash() {
+    closeModal();
+    mainContent.style.opacity = '0';
+    setTimeout(() => { mainContent.style.display = 'none'; }, 1000);
+
+    loaderOverlay.style.display = 'flex';
+
+    let progress = 0;
+    const batteryFill = document.getElementById('battery-fill');
+    const loadingText = document.getElementById('loading-text');
+
+    const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 5) + 2;
+        if (progress > 99) progress = 99;
         
-        audioToPlay.onended = () => {
-            animateVisualizer(false);
+        batteryFill.style.width = progress + '%';
+        loadingText.innerText = 'CHARGING: ' + progress + '%';
+
+        if (progress === 99) {
+            clearInterval(interval);
+            loadingText.innerText = 'CRITICAL ERROR';
+            loadingText.style.color = 'red';
+            loaderOverlay.classList.add('error-mode');
+            
+            setTimeout(() => {
+                // KILL SHOT
+                bgAudio.pause();
+                laserSfx.play();
+                loaderOverlay.style.display = 'none';
+                
+                // Blood Effect
+                bloodScreen.style.height = '100%'; // CSS Transition handles the animation
+                
+                setTimeout(() => {
+                    document.getElementById('death-text').style.display = 'block';
+                }, 600);
+            }, 1500);
         }
+    }, 50);
+}
+
+/* --- 4. TERMINAL LOGIC --- */
+function openTerminal() {
+    terminal.style.display = 'block';
+    document.getElementById('input-pass').focus();
+}
+
+function checkLogin() {
+    const pass = document.getElementById('input-pass').value;
+    // PASSCODE: "jodd"
+    if (pass === "jodd" || pass === "JODD") {
+        window.location.href = "safehouse/";
+    } else {
+        const err = document.getElementById('term-error');
+        err.style.display = 'block';
+        terminal.style.animation = 'shake 0.3s';
+        setTimeout(() => { terminal.style.animation = ''; }, 300);
     }
 }
 
-function animateVisualizer(isActive) {
-    vizBars.forEach(bar => {
-        if (isActive) {
-            bar.style.animation = `sound-wave ${Math.random() * 0.5 + 0.2}s infinite alternate`;
-        } else {
-            bar.style.animation = 'none';
-            bar.style.height = '5px';
-        }
-    });
-}
-
-/* --- THE OVERRIDE SEQUENCE (Chaos) --- */
-function initiateOverride() {
-    // 1. Flash Warning
-    const confirmAction = confirm("WARNING: SYSTEM UNSTABLE. PROCEED?");
-    if (!confirmAction) return;
-
-    // 2. Kill UI
-    hudLayer.style.filter = "blur(10px) grayscale(100%)";
-    sfxAlarm.play();
-
-    // 3. Fake Loading
-    setTimeout(() => {
-        // 4. THE KILL SHOT
-        sfxAlarm.pause();
-        sfxLaser.play();
-        
-        hudLayer.style.display = 'none';
-        chaosLayer.style.display = 'flex';
-        
-        // 5. Redirect to Safehouse
-        setTimeout(() => {
-            window.location.href = "safehouse/";
-        }, 2000);
-
-    }, 1500);
-}
-
-/* --- VISUAL FX --- */
-// Add sound to card hovers
-document.querySelectorAll('.cyber-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        sfxHover.volume = 0.2;
-        sfxHover.currentTime = 0;
-        sfxHover.play().catch(() => {}); // Ignore autoplay errors
-    });
+// Enter Key Support
+document.getElementById('input-pass').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') checkLogin();
 });
+
+
+
