@@ -3,88 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YagyaJodd | DOMAIN</title>
+    <title>YAGYAJODD | SYSTEM V.2.0</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Google Font: Orbitron for Sci-Fi look -->
+    <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap)" rel="stylesheet">
+    <style>body { font-family: 'Orbitron', sans-serif; }</style>
 </head>
 <body>
 
-    <audio id="bg-audio" loop><source src="electricbuzz.wav" type="audio/wav"></audio>
+    <!-- ASSETS -->
+    <audio id="sfx-hover"><source src="electricbuzz.wav" type="audio/wav"></audio>
     <audio id="sfx-laser"><source src="lasershot.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-alarm" loop><source src="alarm.mp3" type="audio/mpeg"></audio>
-
+    <audio id="sfx-alarm"><source src="alarm.mp3" type="audio/mpeg"></audio>
+    
+    <!-- VOICE NOTES (Add yours here) -->
+    <audio id="voice-intro"><source src="intro.mp3" type="audio/mpeg"></audio>
+    <audio id="voice-japan"><source src="japan.mp3" type="audio/mpeg"></audio>
+    
+    <!-- VISUALS -->
     <div class="scanlines"></div>
     <div class="cyber-grid"></div>
-    
-    <div class="watermark">JODD'S DOMAIN</div>
 
-    <div id="surface-world">
+    <!-- THE HUD INTERFACE -->
+    <div id="hud-layer">
         
-        <div class="secret-zone">
-            <button class="secret-btn-style" onclick="showWarning()">
-                <img src="lock_icon.png" class="mini-icon"> RESTRICTED
-            </button>
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="status-text">SYSTEM: <span style="color:#0f0">OPTIMAL</span> // LOCATION: INDIA // TARGET: JAPAN</div>
         </div>
 
-        <div class="social-zone">
-            <a href="https://github.com/yagyaaaaa" target="_blank" class="holo-card">
-                <div class="holo-content">
-                    <img src="github_icon.png" class="card-icon">
-                    <div class="card-text">
-                        <h2>GITHUB</h2>
-                        <p>User: yagyaaaaa</p>
+        <!-- Left Panel (Controls) -->
+        <div class="left-panel">
+            <div class="cyber-card" onclick="window.open('[https://github.com/yagyaaaaa](https://github.com/yagyaaaaa)')">
+                <div class="card-content">
+                    <img src="github_icon.png" class="icon-img">
+                    <div>
+                        <h3>GITHUB</h3>
+                        <small>Repository Access</small>
                     </div>
                 </div>
-            </a>
+            </div>
 
-            <a href="https://instagram.com/yagya_jodd" target="_blank" class="holo-card">
-                <div class="holo-content">
-                    <img src="insta_icon.png" class="card-icon">
-                    <div class="card-text">
-                        <h2>SOCIAL</h2>
-                        <p>@yagya_jodd</p>
+            <div class="cyber-card" onclick="window.open('[https://instagram.com/yagya_jodd](https://instagram.com/yagya_jodd)')">
+                <div class="card-content">
+                    <img src="insta_icon.png" class="icon-img">
+                    <div>
+                        <h3>INSTAGRAM</h3>
+                        <small>Direct Comms</small>
                     </div>
                 </div>
-            </a>
+            </div>
+
+            <!-- THE TRIGGER -->
+            <div class="cyber-card" style="border-color: var(--neon-pink); color: var(--neon-pink);" onclick="initiateOverride()">
+                <div class="card-content">
+                    <img src="lock_icon.png" class="icon-img" style="filter: drop-shadow(0 0 5px var(--neon-pink));">
+                    <div>
+                        <h3>OVERRIDE</h3>
+                        <small>Restricted Access</small>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="brand-zone">
-            <img src="robologo.png" alt="Robot" class="robot-top">
-            <img src="yagya_jodd_textlogo.png" alt="YagyaJodd" class="text-bottom">
+        <!-- Center Stage (Robot & AI) -->
+        <div class="center-stage">
+            <div class="robot-container">
+                <img src="robologo.png" class="robot-img">
+            </div>
+
+            <!-- AI Terminal -->
+            <div class="terminal-box">
+                <div class="visualizer" id="viz-bars">
+                    <div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div>
+                </div>
+                <input type="text" id="ai-input" class="term-input" placeholder="SPEAK TO YAGYA..." autocomplete="off">
+            </div>
         </div>
-    </div>
 
-    <div id="warning-modal">
-        <h2 style="color: var(--terminal-red); font-size: 1rem; border-bottom: 1px solid var(--terminal-red); padding-bottom: 10px;">WARNING: UNSTABLE</h2>
-        <p style="font-size: 0.6rem; margin: 20px 0; line-height: 1.5;">
-            You are attempting to access a corrupted partition.<br><br>
-            <strong>THERE IS NO RETURN.</strong>
-        </p>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="abortSequence()" style="flex:1; padding: 10px; background: #333; color: #fff; border: none; font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer;">ABORT</button>
-            <button onclick="startChaos()" style="flex:1; padding: 10px; background: var(--terminal-red); color: #000; border: none; font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer;">PROCEED</button>
+        <!-- Right Panel (Identity) -->
+        <div class="right-panel">
+            <img src="yagya_jodd_textlogo.png" style="width: 200px; opacity: 0.8;">
+            <div style="margin-top: 20px; text-align: right;">
+                <p>LVL 16 DEV</p>
+                <p>STATUS: ONLINE</p>
+            </div>
         </div>
+
     </div>
 
-    <div id="loader-overlay">
-        <div class="battery-container"><div class="battery-fill" id="battery-fill"></div></div>
-        <p style="margin-top: 20px; color: #0f0; font-size: 0.8rem;" id="loading-text">INITIALIZING...</p>
-    </div>
-
-    <div id="blood-screen">
-        <div id="death-text" style="display: none; text-align: center;">
-            <h1 style="font-size: 2rem; margin-bottom: 20px; color: #000;">NO SIGNAL</h1>
-            <p style="font-size: 0.8rem; opacity: 0.7; color: #000;">
-                THERE IS <span onclick="openTerminal()" style="text-decoration: underline; cursor: help;">NOTHING</span> HERE FOR YOU.
-            </p>
-        </div>
-    </div>
-
-    <div id="security-terminal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: #000; border: 2px solid red; padding: 20px; z-index: 2000;">
-        <p style="color: red; border-bottom: 1px solid red; padding-bottom: 10px; margin-bottom: 10px;">ENTER PASSCODE</p>
-        <input type="password" id="input-pass" placeholder="ACCESS CODE" style="width: 100%; background: #111; border: 1px solid #333; color: red; padding: 10px; font-family: 'Press Start 2P'; font-size: 0.7rem; margin-bottom: 10px; outline: none;">
-        <p id="term-error" style="color: red; font-size: 0.6rem; display: none; margin-bottom: 10px;">> ACCESS DENIED</p>
-        <button onclick="checkLogin()" style="width: 100%; background: red; color: #000; border: none; padding: 10px; font-family: 'Press Start 2P'; font-size: 0.8rem; cursor: pointer;">ACCESS</button>
+    <!-- CHAOS LAYER (Hidden) -->
+    <div id="chaos-overlay">
+        <h1 class="red-text">SYSTEM FAILURE</h1>
+        <p style="color: white; font-family: monospace;">REBOOTING IN SAFE MODE...</p>
     </div>
 
     <script src="script.js"></script>
