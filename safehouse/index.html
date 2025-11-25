@@ -3,244 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECURE ARCHIVE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>SECURE VAULT</title>
+    <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap)" rel="stylesheet">
     <style>
-        /* --- INTERNAL STYLES --- */
-        :root {
-            --neon-pink: #ff3366;
-            --cyber-blue: #00f3ff;
-            --matrix-green: #0f0;
-            --black: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-
         body {
-            background-color: var(--black);
-            color: #fff;
-            font-family: 'Press Start 2P', cursive;
-            margin: 0;
+            background-color: #000;
+            color: #ff0055; /* RED THEME */
+            font-family: 'Orbitron', sans-serif;
             padding: 40px;
-            box-sizing: border-box;
-            min-height: 100vh;
         }
-
-        /* SCANLINES */
-        .scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* HEADER */
-        .header {
-            border-bottom: 2px solid var(--matrix-green);
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-        }
-        .header h1 { font-size: 1.2rem; color: var(--matrix-green); margin: 0; }
-        .badge { background: var(--matrix-green); color: #000; padding: 5px 10px; font-size: 0.6rem; }
-
-        /* GRID SYSTEM */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            position: relative;
-            z-index: 1;
-            align-items: start; /* Prevents stretching */
-        }
-
-        /* CARD DESIGN */
+        .header { border-bottom: 2px solid #ff0055; margin-bottom: 40px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        
         .card {
-            background: var(--glass);
-            border: 1px solid #333;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            border: 1px solid #333; background: rgba(20,0,0,0.5);
+            transition: 0.3s; cursor: pointer;
         }
-
-        /* The Visible Header of the Card */
-        .card-header {
-            padding: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .card-header:hover { background: rgba(0, 243, 255, 0.05); }
+        .card:hover { border-color: #ff0055; box-shadow: 0 0 20px #ff0000; }
         
-        .card.active { border-color: var(--cyber-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
-        .card.active .card-header { background: var(--cyber-blue); color: #000; }
-        .card.active h2 { color: #000; }
-        .card.active p { color: #333; }
-        .card.active .card-icon { color: #000; }
-
-        .card-icon { font-size: 2rem; margin-bottom: 15px; display: block; }
-        .card h2 { font-size: 0.8rem; margin: 0 0 10px 0; color: var(--cyber-blue); }
-        .card p { font-size: 0.5rem; line-height: 1.6; color: #aaa; margin: 0; }
-
-        /* THE HIDDEN DRAWER (Content) */
-        .card-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-            background: rgba(0,0,0,0.5);
-            border-top: 1px solid #333;
-        }
+        .card-header { padding: 20px; font-size: 1.2rem; }
+        .card-content { max-height: 0; overflow: hidden; transition: 0.5s; padding: 0 20px; color: #ccc; font-size: 0.9rem; }
         
-        .content-inner { padding: 20px; font-family: monospace; font-size: 0.8rem; line-height: 1.5; color: #ccc; }
-        
-        /* CONTENT STYLING */
-        .log-entry { margin-bottom: 15px; border-left: 2px solid var(--matrix-green); padding-left: 10px; }
-        .log-date { color: var(--matrix-green); font-size: 0.6rem; margin-bottom: 5px; }
-        
-        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .gallery-placeholder { background: #222; height: 100px; display: flex; align-items: center; justify-content: center; border: 1px dashed #555; color: #555; font-size: 0.6rem; }
+        .card.active .card-content { max-height: 500px; padding-bottom: 20px; }
+        .card.active { background: #ff0055; color: #000; }
+        .card.active .card-content { color: #000; }
 
-        /* LOCKED CARD */
-        .card.locked { opacity: 0.5; border-style: dashed; }
-        .card.locked .card-header { cursor: not-allowed; }
-        .card.locked:hover { border-color: var(--neon-pink); }
-        .card.locked h2 { color: var(--neon-pink); }
-
-        /* LOGOUT */
-        .logout-btn {
-            display: inline-block; margin-top: 50px; padding: 15px 30px;
-            border: 2px solid var(--neon-pink); color: var(--neon-pink); text-decoration: none;
-            font-size: 0.8rem; transition: 0.3s; position: relative; z-index: 1;
-        }
-        .logout-btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 20px var(--neon-pink); }
-
-        /* ANIMATIONS */
-        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(5px); } 50% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
-        .shaking { animation: shake 0.3s; }
-
-        @media (max-width: 600px) { body { padding: 20px; } .grid-container { grid-template-columns: 1fr; } }
+        .logout { margin-top: 50px; display: inline-block; color: #555; text-decoration: none; border: 1px solid #555; padding: 10px 20px; }
+        .logout:hover { color: #fff; border-color: #fff; }
     </style>
 </head>
 <body>
-
-    <div class="scanlines"></div>
-
     <div class="header">
-        <h1>JODD_VAULT</h1>
-        <div class="badge">ACCESS: GRANTED</div>
+        <h1>VAULT_ACCESS_GRANTED</h1>
     </div>
 
-    <div class="grid-container">
-        
-        <div class="card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <span class="card-icon">📂</span>
-                <h2>PERSONAL_LOGS</h2>
-                <p>Daily thoughts and raw ideas.</p>
-            </div>
+    <div class="grid">
+        <!-- JOURNAL -->
+        <div class="card" onclick="toggle(this)">
+            <div class="card-header">📂 PERSONAL LOGS</div>
             <div class="card-content">
-                <div class="content-inner">
-                    <div class="log-entry">
-                        <div class="log-date">ENTRY_001</div>
-                        Started the Safehouse project. The interface is clean. No bugs detected yet.
-                    </div>
-                    <div class="log-entry">
-                        <div class="log-date">ENTRY_002</div>
-                        Need to upload more photos of the setup. The lighting was perfect today.
-                    </div>
-                        <div class="log-entry">
-                     <div class="log-date">ENTRY_003</div>
-                         Old boring text...
-                       </div>
-                       <div class="log-entry">
-                  <div class="log-date">NOV 24 2025</div>
-               Just hit a PR on deadlifts today. The grind never stops.
-                 </div>
-                    </div>
-                </div>
+                <p>ENTRY 001: System rebuilt. Limits broken.</p>
+                <p>ENTRY 002: Japan is closer than it appears.</p>
             </div>
         </div>
 
-        <div class="card" onclick="toggleCard(this)">
-    <div class="card-header">
-        <span class="card-icon">👁️</span>
-        <h2>VISUAL_DATA</h2>
-        <p>Polaroids and gym progress.</p>
-    </div>
-
-    <div class="card-content">
-        <div class="content-inner">
-            <div class="gallery-grid">
-                
-                <img src="../bicepflex.jpg" style="width:100%; border: 1px solid #333; opacity: 0.8;">
-                
-                <div class="gallery-placeholder">IMG_02</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-        <div class="card locked" onclick="shakeCard(this)">
-            <div class="card-header">
-                <span class="card-icon">🔒</span>
-                <h2>PROJECT_MKURE</h2>
-                <p>Classified blueprints. [ACCESS DENIED]</p>
-            </div>
-        </div>
-
-        <div class="card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <span class="card-icon">🎵</span>
-                <h2>VIBE_STATION</h2>
-                <p>Curated playlists.</p>
-            </div>
+        <!-- GALLERY -->
+        <div class="card" onclick="toggle(this)">
+            <div class="card-header">👁️ VISUAL DATA</div>
             <div class="card-content">
-    <div class="content-inner">
-        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZEVXcNHoGSvZn2gO?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        
-        <p style="margin-top:10px; font-size:0.6rem; color:#888;">
-            > SYSTEM_AUDIO: <span style="color:var(--cyber-blue)">ACTIVE</span>
-        </p>
-    </div>
-</div>
+                <img src="../bicepflex.jpg" style="width:100%; border: 2px solid #000;">
+            </div>
         </div>
 
+        <!-- SPOTIFY -->
+        <div class="card" onclick="toggle(this)">
+            <div class="card-header">🎵 AUDIO STREAM</div>
+            <div class="card-content">
+                <!-- Spotify Embed -->
+                <iframe style="border-radius:12px" src="[https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator](https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator)" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
     </div>
 
-    <a href="/" class="logout-btn">DISCONNECT</a>
+    <a href="/" class="logout">DISCONNECT</a>
 
- <script>
-        function toggleCard(card) {
-            // 1. Check if open
-            const isOpen = card.classList.contains('active');
-            
-            // 2. Close ALL cards
-            document.querySelectorAll('.card').forEach(c => {
-                c.classList.remove('active');
-                // This line resets the height to 0
-                const content = c.querySelector('.card-content');
-                if(content) content.style.maxHeight = null;
-            });
-
-            // 3. Open THIS card
-            if (!isOpen) {
-                card.classList.add('active');
-                const content = card.querySelector('.card-content');
-                // This calculates how tall the hidden content is
-                if(content) content.style.maxHeight = content.scrollHeight + "px";
-            }
-        }
-
-        function shakeCard(card) {
-            card.classList.add('shaking');
-            setTimeout(() => {
-                card.classList.remove('shaking');
-            }, 300);
+    <script>
+        function toggle(card) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
         }
     </script>
 </body>
