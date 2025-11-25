@@ -3,90 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YagyaJodd | DOMAIN</title>
-    <link rel="stylesheet" href="style.css">
+    <title>SECURE ARCHIVE</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* --- INTERNAL STYLES (No external file needed) --- */
+        :root {
+            --neon-pink: #ff3366;
+            --cyber-blue: #00f3ff;
+            --matrix-green: #0f0;
+            --black: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--black);
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            margin: 0;
+            padding: 40px;
+            box-sizing: border-box;
+            min-height: 100vh;
+        }
+
+        /* SCANLINES OVERLAY */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* HEADER */
+        .header {
+            border-bottom: 2px solid var(--matrix-green);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .header h1 { font-size: 1.2rem; color: var(--matrix-green); margin: 0; }
+        .badge {
+            background: var(--matrix-green);
+            color: #000;
+            padding: 5px 10px;
+            font-size: 0.6rem;
+        }
+
+        /* GRID SYSTEM (The Masonry Look) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* CARD DESIGN */
+        .card {
+            background: var(--glass);
+            border: 1px solid #333;
+            padding: 30px;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--cyber-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .card-icon { font-size: 2rem; margin-bottom: 15px; display: block; }
+        .card h2 { font-size: 0.8rem; margin: 0 0 10px 0; color: var(--cyber-blue); }
+        .card p { font-size: 0.5rem; line-height: 1.6; color: #aaa; margin: 0; }
+
+        /* LOCKED CARD */
+        .card.locked { opacity: 0.5; border-style: dashed; }
+        .card.locked:hover { transform: none; box-shadow: none; border-color: var(--neon-pink); cursor: not-allowed; }
+        .card.locked h2 { color: var(--neon-pink); }
+
+        /* LOGOUT BUTTON */
+        .logout-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 15px 30px;
+            border: 2px solid var(--neon-pink);
+            color: var(--neon-pink);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        .logout-btn:hover {
+            background: var(--neon-pink);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        /* MOBILE FIX */
+        @media (max-width: 600px) {
+            body { padding: 20px; }
+            .grid-container { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-    <audio id="bg-audio" loop><source src="electricbuzz.wav" type="audio/wav"></audio>
-    <audio id="sfx-laser"><source src="lasershot.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-alarm" loop><source src="alarm.mp3" type="audio/mpeg"></audio>
-
     <div class="scanlines"></div>
-    <div class="cyber-grid"></div>
-    
-    <div class="watermark">JODD'S DOMAIN</div>
 
-    <div id="surface-world">
+    <div class="header">
+        <h1>JODD_VAULT</h1>
+        <div class="badge">ACCESS: GRANTED</div>
+    </div>
+
+    <div class="grid-container">
         
-        <div class="secret-zone">
-            <button class="secret-btn-style" onclick="showWarning()">
-                <img src="lock_icon.png" class="mini-icon"> RESTRICTED
-            </button>
+        <div class="card" onclick="alert('OPENING ENCRYPTED LOGS...')">
+            <span class="card-icon">📂</span>
+            <h2>PERSONAL_LOGS</h2>
+            <p>Daily thoughts, raw ideas, and unfinished code snippets. [READ_ONLY]</p>
         </div>
 
-        <div class="social-zone">
-            <a href="https://github.com/yagyaaaaa" target="_blank" class="holo-card">
-                <div class="holo-content">
-                    <img src="github_icon.png" class="card-icon">
-                    <div class="card-text">
-                        <h2>GITHUB</h2>
-                        <p>User: yagyaaaaa</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="https://instagram.com/yagya_jodd" target="_blank" class="holo-card">
-                <div class="holo-content">
-                    <img src="insta_icon.png" class="card-icon">
-                    <div class="card-text">
-                        <h2>SOCIAL</h2>
-                        <p>@yagya_jodd</p>
-                    </div>
-                </div>
-            </a>
+        <div class="card" onclick="alert('LOADING IMAGES...')">
+            <span class="card-icon">👁️</span>
+            <h2>VISUAL_DATA</h2>
+            <p>Polaroids, gym progress, and setup tours.</p>
         </div>
 
-        <div class="brand-zone">
-            <img src="robologo.png" alt="Robot" class="robot-top">
-            <img src="yagya_jodd_textlogo.png" alt="YagyaJodd" class="text-bottom">
+        <div class="card locked" onclick="alert('ACCESS DENIED. LEVEL 10 CLEARANCE REQUIRED.')">
+            <span class="card-icon">🔒</span>
+            <h2>PROJECT_MKURE</h2>
+            <p>Classified blueprints. Source code restricted.</p>
         </div>
-    </div>
 
-    <div id="warning-modal">
-        <h2 style="color: var(--terminal-red); font-size: 1rem; border-bottom: 1px solid var(--terminal-red); padding-bottom: 10px;">WARNING: UNSTABLE</h2>
-        <p style="font-size: 0.6rem; margin: 20px 0; line-height: 1.5;">
-            You are attempting to access a corrupted partition.<br><br>
-            <strong>THERE IS NO RETURN.</strong>
-        </p>
-        <div style="display: flex; gap: 10px;">
-            <button onclick="abortSequence()" style="flex:1; padding: 10px; background: #333; color: #fff; border: none; font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer;">ABORT</button>
-            <button onclick="startChaos()" style="flex:1; padding: 10px; background: var(--terminal-red); color: #000; border: none; font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer;">PROCEED</button>
+        <div class="card" onclick="alert('PLAYING PLAYLIST...')">
+            <span class="card-icon">🎵</span>
+            <h2>VIBE_STATION</h2>
+            <p>Curated playlists for coding and lifting.</p>
         </div>
+
     </div>
 
-    <div id="loader-overlay">
-        <div class="battery-container"><div class="battery-fill" id="battery-fill"></div></div>
-        <p style="margin-top: 20px; color: #0f0; font-size: 0.8rem;" id="loading-text">INITIALIZING...</p>
-    </div>
+    <a href="/" class="logout-btn">DISCONNECT</a>
 
-    <div id="blood-screen">
-        <div id="death-text" style="display: none; text-align: center;">
-            <h1 style="font-size: 2rem; margin-bottom: 20px; color: #000;">NO SIGNAL</h1>
-            <p style="font-size: 0.8rem; opacity: 0.7; color: #000;">
-                THERE IS <span onclick="openTerminal()" style="text-decoration: underline; cursor: help;">NOTHING</span> HERE FOR YOU.
-            </p>
-        </div>
-    </div>
-
-    <div id="security-terminal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: #000; border: 2px solid red; padding: 20px; z-index: 2000;">
-        <p style="color: red; border-bottom: 1px solid red; padding-bottom: 10px; margin-bottom: 10px;">ENTER PASSCODE</p>
-        <input type="password" id="input-pass" placeholder="ACCESS CODE" style="width: 100%; background: #111; border: 1px solid #333; color: red; padding: 10px; font-family: 'Press Start 2P'; font-size: 0.7rem; margin-bottom: 10px; outline: none;">
-        <p id="term-error" style="color: red; font-size: 0.6rem; display: none; margin-bottom: 10px;">> ACCESS DENIED</p>
-        <button onclick="checkLogin()" style="width: 100%; background: red; color: #000; border: none; padding: 10px; font-family: 'Press Start 2P'; font-size: 0.8rem; cursor: pointer;">ACCESS</button>
-    </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
