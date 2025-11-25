@@ -3,74 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YagyaJodd | FATAL ERROR</title>
+    <title>YagyaJodd | DOMAIN</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- AUDIO -->
     <audio id="bg-audio" loop><source src="electricbuzz.wav" type="audio/wav"></audio>
     <audio id="sfx-laser"><source src="lasershot.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-alarm" loop><source src="alarm.mp3" type="audio/mpeg"></audio>
 
     <div class="scanlines"></div>
+    <div class="cyber-grid"></div>
+    
+    <div class="watermark">JODD'S DOMAIN</div>
 
-    <!-- 1. START SCREEN -->
-    <div id="start-overlay">
-        <p class="blink">> INITIALIZE SYSTEM <</p>
-    </div>
+    <div id="surface-world">
+        
+        <div class="secret-zone">
+            <button class="secret-btn-style" onclick="showWarning()">
+                <img src="lock_icon.png" class="mini-icon"> RESTRICTED
+            </button>
+        </div>
 
-    <!-- 2. CUSTOM MODAL (The Warning) -->
-    <div id="custom-modal">
-        <div class="modal-box">
-            <div class="modal-title">WARNING: UNSTABLE</div>
-            <div class="modal-msg">
-                You are attempting to access a corrupted partition.<br><br>
-                <strong>THERE IS NO RETURN.</strong>
-            </div>
-            <button class="modal-btn cancel-btn" onclick="closeModal()">ABORT</button>
-            <button class="modal-btn" onclick="startCrash()">PROCEED</button>
+        <div class="social-zone">
+            <a href="https://github.com/yagyaaaaa" target="_blank" class="holo-card">
+                <div class="holo-content">
+                    <img src="github_icon.png" class="card-icon">
+                    <div class="card-text">
+                        <h2>GITHUB</h2>
+                        <p>User: yagyaaaaa</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://instagram.com/yagya_jodd" target="_blank" class="holo-card">
+                <div class="holo-content">
+                    <img src="insta_icon.png" class="card-icon">
+                    <div class="card-text">
+                        <h2>SOCIAL</h2>
+                        <p>@yagya_jodd</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="brand-zone">
+            <img src="robologo.png" alt="Robot" class="robot-top">
+            <img src="yagya_jodd_textlogo.png" alt="YagyaJodd" class="text-bottom">
         </div>
     </div>
 
-    <!-- 3. LOADING -->
-    <div id="loader-overlay">
-        <div class="battery-container"><div class="battery-fill" id="battery-fill"></div></div>
-        <p id="loading-text" style="color:#0f0; margin-top:20px;">CHARGING...</p>
+    <div id="warning-modal">
+        <h2 style="color: var(--terminal-red); font-size: 1rem; border-bottom: 1px solid var(--terminal-red); padding-bottom: 10px;">WARNING: UNSTABLE</h2>
+        <p style="font-size: 0.6rem; margin: 20px 0; line-height: 1.5;">
+            You are attempting to access a corrupted partition.<br><br>
+            <strong>THERE IS NO RETURN.</strong>
+        </p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="abortSequence()" style="flex:1; padding: 10px; background: #333; color: #fff; border: none; font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer;">ABORT</button>
+            <button onclick="startChaos()" style="flex:1; padding: 10px; background: var(--terminal-red); color: #000; border: none; font-family: 'Press Start 2P'; font-size: 0.6rem; cursor: pointer;">PROCEED</button>
+        </div>
     </div>
 
-    <!-- 4. BLOOD SCREEN -->
+    <div id="loader-overlay">
+        <div class="battery-container"><div class="battery-fill" id="battery-fill"></div></div>
+        <p style="margin-top: 20px; color: #0f0; font-size: 0.8rem;" id="loading-text">INITIALIZING...</p>
+    </div>
+
     <div id="blood-screen">
         <div id="death-text" style="display: none; text-align: center;">
             <h1 style="font-size: 2rem; margin-bottom: 20px; color: #000;">NO SIGNAL</h1>
             <p style="font-size: 0.8rem; opacity: 0.7; color: #000;">
-                THERE IS <span class="secret-link" onclick="openTerminal()">NOTHING</span> HERE FOR YOU.
+                THERE IS <span onclick="openTerminal()" style="text-decoration: underline; cursor: help;">NOTHING</span> HERE FOR YOU.
             </p>
         </div>
     </div>
 
-    <!-- 5. TERMINAL -->
-    <div id="security-terminal">
-        <p style="color: red; border-bottom: 1px solid red; padding-bottom: 10px;">ENTER PASSCODE</p>
-        <input type="password" id="input-pass" class="term-input" placeholder="ACCESS CODE">
-        <p id="term-error" style="color: red; font-size: 0.6rem; display: none;">ACCESS DENIED</p>
-        <button class="modal-btn" onclick="checkLogin()" style="width:100%">ACCESS</button>
-    </div>
-
-    <!-- 6. MAIN CONTENT (The Reward) -->
-    <div class="container" id="main-content">
-        <div class="left-col">
-            <img src="robologo.png" class="robot-img">
-        </div>
-        <div class="right-col">
-            <img src="yagya_jodd_textlogo.png" class="text-logo-img">
-            <!-- TRIGGER BUTTON -->
-            <button class="btn" onclick="openModal()">ACCESS RESTRICTED DATA</button>
-        </div>
+    <div id="security-terminal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; background: #000; border: 2px solid red; padding: 20px; z-index: 2000;">
+        <p style="color: red; border-bottom: 1px solid red; padding-bottom: 10px; margin-bottom: 10px;">ENTER PASSCODE</p>
+        <input type="password" id="input-pass" placeholder="ACCESS CODE" style="width: 100%; background: #111; border: 1px solid #333; color: red; padding: 10px; font-family: 'Press Start 2P'; font-size: 0.7rem; margin-bottom: 10px; outline: none;">
+        <p id="term-error" style="color: red; font-size: 0.6rem; display: none; margin-bottom: 10px;">> ACCESS DENIED</p>
+        <button onclick="checkLogin()" style="width: 100%; background: red; color: #000; border: none; padding: 10px; font-family: 'Press Start 2P'; font-size: 0.8rem; cursor: pointer;">ACCESS</button>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
