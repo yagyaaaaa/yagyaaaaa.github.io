@@ -1,129 +1,145 @@
 /* --- GLOBAL VARIABLES --- */
 :root {
-    --neon-pink: #ff3366;
+    --neon-pink: #ff0055;
     --cyber-blue: #00f3ff;
-    --blood-red: #8a0303;
-    --terminal-red: #ff3333;
-    --black: #050505;
+    --blood-red: #ff0000;
+    --void-black: #050505;
+    --glass: rgba(255, 255, 255, 0.02);
 }
 
+* { box-sizing: border-box; }
+
 body {
-    background-color: var(--black);
+    background-color: var(--void-black);
     color: #fff;
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Courier New', monospace; /* Fallback */
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    user-select: none;
+    perspective: 1000px; /* Enables 3D effects */
 }
 
-a { text-decoration: none; color: inherit; }
-
-/* --- THE 3D WIREFRAME ROOM (CSS Magic) --- */
+/* --- 3D WIREFRAME ROOM --- */
 .cyber-grid {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: 0;
-    pointer-events: none;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: 
-        linear-gradient(transparent 0%, rgba(0,0,0,1) 100%), /* Fade to black at bottom */
         linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
-    background-size: 40px 40px;
-    transform: perspective(500px) rotateX(20deg) scale(1.5);
-    opacity: 0.6;
+    background-size: 50px 50px;
+    transform: rotateX(60deg) translateY(-100px) scale(2);
+    transform-origin: top center;
+    opacity: 0.3;
+    animation: grid-move 20s linear infinite;
+    z-index: -1;
 }
 
-/* --- WATERMARK --- */
-.watermark {
-    position: fixed; bottom: -20px; left: 50%; transform: translateX(-50%);
-    font-size: 5rem; color: rgba(255, 255, 255, 0.03); white-space: nowrap; pointer-events: none; z-index: 1;
+@keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 1000px; }
 }
 
-/* --- THE SURFACE WORLD --- */
-#surface-world {
+/* --- SCANLINES --- */
+.scanlines {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.5) 3px
+    );
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* --- MAIN LAYOUT (The HUD) --- */
+#hud-layer {
     display: grid;
-    grid-template-columns: 1fr 300px;
-    grid-template-rows: 100px 1fr;
-    width: 100%; max-width: 1400px; height: 100vh;
-    padding: 40px; box-sizing: border-box; position: relative; z-index: 10;
-    transition: opacity 1s ease-out;
+    grid-template-columns: 300px 1fr 300px;
+    grid-template-rows: 100px 1fr 100px;
+    width: 100vw; height: 100vh;
+    padding: 20px;
+    transition: filter 0.5s, opacity 1s;
 }
 
-/* 1. SECRET ZONE */
-.secret-zone { grid-column: 1; grid-row: 1; display: flex; align-items: flex-start; }
-.secret-btn-style {
-    border: 1px solid var(--terminal-red); color: var(--terminal-red);
-    background: rgba(50, 0, 0, 0.3); padding: 10px 15px; font-size: 0.6rem;
-    cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px;
-}
-.secret-btn-style:hover { background: var(--terminal-red); color: #000; box-shadow: 0 0 15px var(--terminal-red); }
-.mini-icon { width: 16px; height: 16px; image-rendering: pixelated; }
+/* Zones */
+.top-bar { grid-column: 1 / -1; border-bottom: 1px solid var(--cyber-blue); display: flex; align-items: center; padding-left: 20px; }
+.status-text { color: var(--cyber-blue); font-size: 0.8rem; letter-spacing: 2px; }
 
-/* 2. SOCIAL ZONE */
-.social-zone {
-    grid-column: 1; grid-row: 2; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; gap: 40px;
-}
-.holo-card {
-    width: 280px; padding: 20px; border: 2px solid var(--cyber-blue);
-    background: rgba(0, 243, 255, 0.05); color: var(--cyber-blue);
-    transform: skewX(-10deg); transition: 0.3s; cursor: pointer;
-    display: flex; align-items: center; gap: 20px;
-}
-.holo-content { transform: skewX(10deg); display: flex; align-items: center; gap: 15px; width: 100%; }
+.left-panel { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+.center-stage { grid-column: 2; grid-row: 2; display: flex; justify-content: center; align-items: center; position: relative; }
+.right-panel { grid-column: 3; grid-row: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 1px solid #333; }
 
-.card-icon { width: 40px; height: 40px; image-rendering: pixelated; filter: drop-shadow(0 0 5px var(--cyber-blue)); }
-.card-text h2 { font-size: 1rem; margin: 0; }
-.card-text p { font-size: 0.5rem; margin: 5px 0 0 0; opacity: 0.7; }
-
-.holo-card:hover {
-    background: var(--cyber-blue); color: #000;
-    transform: skewX(-10deg) translateX(10px) scale(1.05);
-    box-shadow: 10px 10px 0px rgba(0, 243, 255, 0.2);
-}
-/* Invert icon color on hover so it stays visible against blue background */
-.holo-card:hover .card-icon { filter: brightness(0); }
-
-/* 3. BRAND ZONE */
-.brand-zone {
-    grid-column: 2; grid-row: 1 / span 2; border-left: 1px solid #333;
-    display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-left: 40px;
-}
-.robot-top { width: 200px; image-rendering: pixelated; animation: float 4s infinite ease-in-out; }
-.text-bottom { width: 250px; image-rendering: pixelated; opacity: 0.8; }
-
-/* --- HIDDEN LAYERS --- */
-#loader-overlay, #blood-screen, #security-terminal, #warning-modal { display: none; }
-
-/* Warning Modal */
-#warning-modal {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 320px; background: #000; border: 2px solid var(--terminal-red);
-    padding: 20px; z-index: 2000; text-align: center;
-    box-shadow: 0 0 50px rgba(255, 0, 0, 0.4);
-    animation: pulse-red 1s infinite;
+/* --- INTERACTIVE CARDS --- */
+.cyber-card {
+    background: var(--glass);
+    border: 1px solid var(--cyber-blue);
+    padding: 20px;
+    margin-bottom: 20px;
+    transform: skewX(-10deg);
+    transition: 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
 }
 
-.scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06)); background-size: 100% 2px, 3px 100%; pointer-events: none; z-index: 900; }
-#loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; flex-direction: column; justify-content: center; align-items: center; }
-.battery-container { width: 300px; height: 40px; border: 4px solid #fff; padding: 5px; position: relative; }
-.battery-fill { height: 100%; width: 0%; background-image: repeating-linear-gradient(90deg, #0f0 0px, #0f0 15px, transparent 15px, transparent 20px); }
-.error-mode .battery-container { border-color: var(--neon-pink); animation: shake 0.5s infinite; }
-.error-mode .battery-fill { background-image: repeating-linear-gradient(90deg, var(--neon-pink) 0px, var(--neon-pink) 15px, transparent 15px, transparent 20px); }
-#blood-screen { position: fixed; top: 0; left: 0; width: 100%; height: 0%; background-color: var(--blood-red); z-index: 998; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; }
-.blood-anim { animation: drip-down 0.5s steps(10) forwards; }
+.cyber-card::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+    transition: 0.5s;
+}
 
-@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
+.cyber-card:hover::before { left: 100%; }
+.cyber-card:hover { 
+    background: rgba(0, 243, 255, 0.1); 
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); 
+    transform: skewX(-10deg) translateX(10px);
+}
+
+.card-content { transform: skewX(10deg); display: flex; align-items: center; gap: 15px; }
+.icon-img { width: 30px; height: 30px; filter: drop-shadow(0 0 5px var(--cyber-blue)); }
+
+/* --- THE CENTERPIECE (Robot) --- */
+.robot-container {
+    width: 400px; height: 400px;
+    position: relative;
+    animation: hover-float 4s ease-in-out infinite;
+}
+.robot-img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 20px var(--cyber-blue)); }
+
+@keyframes hover-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* --- VOICE TERMINAL --- */
+.terminal-box {
+    position: absolute; bottom: 50px; width: 400px;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid var(--cyber-blue);
+    padding: 15px;
+    transform: skewX(-10deg);
+}
+.visualizer { display: flex; gap: 5px; height: 20px; align-items: flex-end; margin-bottom: 10px; }
+.v-bar { width: 5px; background: var(--cyber-blue); height: 5px; transition: height 0.1s; }
+.term-input {
+    width: 100%; background: transparent; border: none; border-bottom: 1px solid #555;
+    color: var(--cyber-blue); font-family: monospace; font-size: 1rem; outline: none;
+}
+
+/* --- HIDDEN CHAOS ELEMENTS --- */
+#chaos-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: black; z-index: 2000; display: none;
+    justify-content: center; align-items: center; flex-direction: column;
+}
+.red-text { color: red; font-size: 2rem; text-shadow: 2px 2px #fff; animation: shake 0.1s infinite; }
+
 @keyframes shake { 0% { transform: translate(1px, 1px); } 100% { transform: translate(-1px, -1px); } }
-@keyframes drip-down { 0% { height: 0%; } 100% { height: 100%; } }
-@keyframes pulse-red { 0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); } 50% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.8); } 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); } }
 
-/* MOBILE */
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 900px) {
-    #surface-world { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding: 20px; height: auto; overflow-y: auto; }
-    .brand-zone { grid-row: 1; grid-column: 1; border-left: none; border-bottom: 1px solid #333; padding: 0 0 20px 0; margin-bottom: 20px; }
-    .social-zone { grid-row: 2; grid-column: 1; }
-    .secret-zone { grid-row: 3; grid-column: 1; justify-content: center; margin-top: 50px; }
-    .watermark { font-size: 2rem; }
+    #hud-layer { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; display: flex; flex-direction: column; }
+    .right-panel { border: none; border-top: 1px solid #333; padding-top: 20px; margin-top: 20px; }
+    .robot-container { width: 250px; height: 250px; }
+    .terminal-box { width: 90%; position: relative; bottom: auto; margin-top: 30px; }
 }
