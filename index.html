@@ -3,101 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAGYAJODD | SYSTEM V.2.0</title>
+    <title>YagyaJodd | FATAL ERROR</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Font: Orbitron for Sci-Fi look -->
-    <link href="[https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap)" rel="stylesheet">
-    <style>body { font-family: 'Orbitron', sans-serif; }</style>
 </head>
 <body>
 
-    <!-- ASSETS -->
-    <audio id="sfx-hover"><source src="electricbuzz.wav" type="audio/wav"></audio>
+    <!-- AUDIO -->
+    <audio id="bg-audio" loop><source src="electricbuzz.wav" type="audio/wav"></audio>
     <audio id="sfx-laser"><source src="lasershot.mp3" type="audio/mpeg"></audio>
-    <audio id="sfx-alarm"><source src="alarm.mp3" type="audio/mpeg"></audio>
-    
-    <!-- VOICE NOTES (Add yours here) -->
-    <audio id="voice-intro"><source src="intro.mp3" type="audio/mpeg"></audio>
-    <audio id="voice-japan"><source src="japan.mp3" type="audio/mpeg"></audio>
-    
-    <!-- VISUALS -->
+
     <div class="scanlines"></div>
-    <div class="cyber-grid"></div>
 
-    <!-- THE HUD INTERFACE -->
-    <div id="hud-layer">
-        
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <div class="status-text">SYSTEM: <span style="color:#0f0">OPTIMAL</span> // LOCATION: INDIA // TARGET: JAPAN</div>
-        </div>
-
-        <!-- Left Panel (Controls) -->
-        <div class="left-panel">
-            <div class="cyber-card" onclick="window.open('[https://github.com/yagyaaaaa](https://github.com/yagyaaaaa)')">
-                <div class="card-content">
-                    <img src="github_icon.png" class="icon-img">
-                    <div>
-                        <h3>GITHUB</h3>
-                        <small>Repository Access</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="cyber-card" onclick="window.open('[https://instagram.com/yagya_jodd](https://instagram.com/yagya_jodd)')">
-                <div class="card-content">
-                    <img src="insta_icon.png" class="icon-img">
-                    <div>
-                        <h3>INSTAGRAM</h3>
-                        <small>Direct Comms</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- THE TRIGGER -->
-            <div class="cyber-card" style="border-color: var(--neon-pink); color: var(--neon-pink);" onclick="initiateOverride()">
-                <div class="card-content">
-                    <img src="lock_icon.png" class="icon-img" style="filter: drop-shadow(0 0 5px var(--neon-pink));">
-                    <div>
-                        <h3>OVERRIDE</h3>
-                        <small>Restricted Access</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Center Stage (Robot & AI) -->
-        <div class="center-stage">
-            <div class="robot-container">
-                <img src="robologo.png" class="robot-img">
-            </div>
-
-            <!-- AI Terminal -->
-            <div class="terminal-box">
-                <div class="visualizer" id="viz-bars">
-                    <div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div>
-                </div>
-                <input type="text" id="ai-input" class="term-input" placeholder="SPEAK TO YAGYA..." autocomplete="off">
-            </div>
-        </div>
-
-        <!-- Right Panel (Identity) -->
-        <div class="right-panel">
-            <img src="yagya_jodd_textlogo.png" style="width: 200px; opacity: 0.8;">
-            <div style="margin-top: 20px; text-align: right;">
-                <p>LVL 16 DEV</p>
-                <p>STATUS: ONLINE</p>
-            </div>
-        </div>
-
+    <!-- 1. START SCREEN -->
+    <div id="start-overlay">
+        <p class="blink">> INITIALIZE SYSTEM <</p>
     </div>
 
-    <!-- CHAOS LAYER (Hidden) -->
-    <div id="chaos-overlay">
-        <h1 class="red-text">SYSTEM FAILURE</h1>
-        <p style="color: white; font-family: monospace;">REBOOTING IN SAFE MODE...</p>
+    <!-- 2. CUSTOM MODAL (The Warning) -->
+    <div id="custom-modal">
+        <div class="modal-box">
+            <div class="modal-title">WARNING: UNSTABLE</div>
+            <div class="modal-msg">
+                You are attempting to access a corrupted partition.<br><br>
+                <strong>THERE IS NO RETURN.</strong>
+            </div>
+            <button class="modal-btn cancel-btn" onclick="closeModal()">ABORT</button>
+            <button class="modal-btn" onclick="startCrash()">PROCEED</button>
+        </div>
+    </div>
+
+    <!-- 3. LOADING -->
+    <div id="loader-overlay">
+        <div class="battery-container"><div class="battery-fill" id="battery-fill"></div></div>
+        <p id="loading-text" style="color:#0f0; margin-top:20px;">CHARGING...</p>
+    </div>
+
+    <!-- 4. BLOOD SCREEN -->
+    <div id="blood-screen">
+        <div id="death-text" style="display: none; text-align: center;">
+            <h1 style="font-size: 2rem; margin-bottom: 20px; color: #000;">NO SIGNAL</h1>
+            <p style="font-size: 0.8rem; opacity: 0.7; color: #000;">
+                THERE IS <span class="secret-link" onclick="openTerminal()">NOTHING</span> HERE FOR YOU.
+            </p>
+        </div>
+    </div>
+
+    <!-- 5. TERMINAL -->
+    <div id="security-terminal">
+        <p style="color: red; border-bottom: 1px solid red; padding-bottom: 10px;">ENTER PASSCODE</p>
+        <input type="password" id="input-pass" class="term-input" placeholder="ACCESS CODE">
+        <p id="term-error" style="color: red; font-size: 0.6rem; display: none;">ACCESS DENIED</p>
+        <button class="modal-btn" onclick="checkLogin()" style="width:100%">ACCESS</button>
+    </div>
+
+    <!-- 6. MAIN CONTENT (The Reward) -->
+    <div class="container" id="main-content">
+        <div class="left-col">
+            <img src="robologo.png" class="robot-img">
+        </div>
+        <div class="right-col">
+            <img src="yagya_jodd_textlogo.png" class="text-logo-img">
+            <!-- TRIGGER BUTTON -->
+            <button class="btn" onclick="openModal()">ACCESS RESTRICTED DATA</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
+
+
