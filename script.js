@@ -1,41 +1,36 @@
 /* --- ASSETS --- */
-const surface = document.getElementById('surface-world');
-const warningModal = document.getElementById('warning-modal');
+const startOverlay = document.getElementById('start-overlay');
+const customModal = document.getElementById('custom-modal');
 const loaderOverlay = document.getElementById('loader-overlay');
+const bloodScreen = document.getElementById('blood-screen');
+const mainContent = document.getElementById('main-content');
+const terminal = document.getElementById('security-terminal');
+const gatekeeperScreen = document.getElementById('gatekeeper-screen');
+const rejectionScreen = document.getElementById('rejection-screen');
 
 const bgAudio = document.getElementById('bg-audio');
 const laserSfx = document.getElementById('sfx-laser');
-const alarmSfx = document.getElementById('sfx-alarm');
 
-/* --- 1. SHOW WARNING (Play Alarm) --- */
-function showWarning() {
-    warningModal.style.display = 'block';
-    alarmSfx.volume = 0.3;
-    alarmSfx.play().catch(e => console.log("Audio blocked"));
-}
-
-function abortSequence() {
-    warningModal.style.display = 'none';
-    alarmSfx.pause();
-    alarmSfx.currentTime = 0;
-}
-
-/* --- 2. START THE CHAOS --- */
-function startChaos() {
-    // Stop Alarm, Hide Surface
-    alarmSfx.pause();
-    alarmSfx.currentTime = 0;
-    
-    warningModal.style.display = 'none';
-    surface.style.opacity = '0';
-    setTimeout(() => { surface.style.display = 'none'; }, 1000);
-
-    // Show Loader
-    loaderOverlay.style.display = 'flex';
+/* --- 1. START --- */
+startOverlay.addEventListener('click', () => {
     bgAudio.volume = 0.5;
     bgAudio.play().catch(e => console.log(e));
+    startOverlay.style.display = 'none';
+    mainContent.style.opacity = '1';
+});
 
-    // Battery Logic
+/* --- 2. MODAL LOGIC --- */
+function openModal() { customModal.style.display = 'flex'; }
+function closeModal() { customModal.style.display = 'none'; }
+
+/* --- 3. CRASH SEQUENCE --- */
+function startCrash() {
+    closeModal();
+    mainContent.style.opacity = '0';
+    setTimeout(() => { mainContent.style.display = 'none'; }, 1000);
+
+    loaderOverlay.style.display = 'flex';
+
     let progress = 0;
     const batteryFill = document.getElementById('battery-fill');
     const loadingText = document.getElementById('loading-text');
@@ -45,49 +40,65 @@ function startChaos() {
         if (progress > 99) progress = 99;
         
         batteryFill.style.width = progress + '%';
-        loadingText.innerText = 'OVERLOADING: ' + progress + '%';
+        loadingText.innerText = 'CHARGING: ' + progress + '%';
 
         if (progress === 99) {
             clearInterval(interval);
             loadingText.innerText = 'CRITICAL ERROR';
-            document.querySelector('.battery-container').style.borderColor = 'red';
+            loadingText.style.color = 'red';
+            loaderOverlay.classList.add('error-mode');
             
             setTimeout(() => {
-                // THE KILL SHOT
+                // KILL SHOT
                 bgAudio.pause();
                 laserSfx.play();
                 loaderOverlay.style.display = 'none';
                 
-                const bloodScreen = document.getElementById('blood-screen');
-                bloodScreen.style.display = 'flex';
-                bloodScreen.classList.add('blood-anim');
-
+                // Blood Effect
+                bloodScreen.style.height = '100%'; 
+                
+                // SHOW GATEKEEPER AFTER BLOOD
                 setTimeout(() => {
-                    document.getElementById('death-text').style.display = 'block';
-                }, 800);
+                    gatekeeperScreen.style.display = 'flex';
+                }, 1000);
             }, 1500);
         }
     }, 50);
 }
 
-/* --- 3. TERMINAL LOGIC --- */
-function openTerminal() {
-    document.getElementById('security-terminal').style.display = 'block';
+/* --- 4. GATEKEEPER LOGIC --- */
+function gatekeeperYes() {
+    gatekeeperScreen.style.display = 'none';
+    terminal.style.display = 'block';
     document.getElementById('input-pass').focus();
 }
 
+function gatekeeperNo() {
+    gatekeeperScreen.style.display = 'none';
+    rejectionScreen.style.display = 'flex';
+}
+
+function closeTerminal() {
+    terminal.style.display = 'none';
+    gatekeeperScreen.style.display = 'flex'; // Go back to gatekeeper
+}
+
+/* --- 5. PASSCODE LOGIC --- */
 function checkLogin() {
     const pass = document.getElementById('input-pass').value;
-    if (pass === "JODD_MODE" || pass === "jodd") {
+    if (pass === "jodd" || pass === "JODD") {
         window.location.href = "safehouse/";
     } else {
         const err = document.getElementById('term-error');
         err.style.display = 'block';
-        setTimeout(() => { err.style.display = 'none'; }, 2000);
+        terminal.style.animation = 'shake 0.3s';
+        setTimeout(() => { terminal.style.animation = ''; }, 300);
     }
 }
 
-// Allow "Enter" key for password
 document.getElementById('input-pass').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') checkLogin();
 });
+
+
+
