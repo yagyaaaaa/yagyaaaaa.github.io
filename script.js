@@ -14,7 +14,7 @@ const laserSfx = document.getElementById('sfx-laser');
 /* --- 1. START --- */
 startOverlay.addEventListener('click', () => {
     bgAudio.volume = 0.5;
-    bgAudio.play().catch(e => console.log(e));
+    bgAudio.play().catch(e => console.log("Audio blocked", e));
     startOverlay.style.display = 'none';
     mainContent.style.opacity = '1';
 });
@@ -26,9 +26,11 @@ function closeModal() { customModal.style.display = 'none'; }
 /* --- 3. CRASH SEQUENCE --- */
 function startCrash() {
     closeModal();
+    // Fade out main content
     mainContent.style.opacity = '0';
     setTimeout(() => { mainContent.style.display = 'none'; }, 1000);
 
+    // Show Loader
     loaderOverlay.style.display = 'flex';
 
     let progress = 0;
@@ -42,6 +44,7 @@ function startCrash() {
         batteryFill.style.width = progress + '%';
         loadingText.innerText = 'CHARGING: ' + progress + '%';
 
+        // TRIGGER ERROR AT 99%
         if (progress === 99) {
             clearInterval(interval);
             loadingText.innerText = 'CRITICAL ERROR';
@@ -51,13 +54,16 @@ function startCrash() {
             setTimeout(() => {
                 // KILL SHOT
                 bgAudio.pause();
+                bgAudio.currentTime = 0;
+                laserSfx.volume = 1.0;
                 laserSfx.play();
+                
                 loaderOverlay.style.display = 'none';
                 
-                // Blood Effect
+                // Blood Effect (CSS Transition handles height)
                 bloodScreen.style.height = '100%'; 
                 
-                // SHOW GATEKEEPER AFTER BLOOD
+                // Show Gatekeeper AFTER blood fills
                 setTimeout(() => {
                     gatekeeperScreen.style.display = 'flex';
                 }, 1000);
@@ -80,7 +86,7 @@ function gatekeeperNo() {
 
 function closeTerminal() {
     terminal.style.display = 'none';
-    gatekeeperScreen.style.display = 'flex'; // Go back to gatekeeper
+    gatekeeperScreen.style.display = 'flex'; 
 }
 
 /* --- 5. PASSCODE LOGIC --- */
