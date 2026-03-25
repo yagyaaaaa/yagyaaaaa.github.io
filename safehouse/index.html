@@ -3,35 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECURE ARCHIVE</title>
+    <title>SECURE ARCHIVE // JODD_VAULT</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* --- INTERNAL STYLES --- */
         :root {
             --neon-pink: #ff3366;
             --cyber-blue: #00f3ff;
             --matrix-green: #0f0;
+            --neon-yellow: #ffe600;
+            --neon-purple: #b200ff;
+            --blood-red: #8a0303;
             --black: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.04);
+            --font: 'Press Start 2P', cursive;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--black);
             color: #fff;
-            font-family: 'Press Start 2P', cursive;
-            margin: 0;
+            font-family: var(--font);
             padding: 40px;
-            box-sizing: border-box;
             min-height: 100vh;
         }
 
         /* SCANLINES */
         .scanlines {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.2) 50%),
+                        linear-gradient(90deg, rgba(255,0,0,0.04), rgba(0,255,0,0.01), rgba(0,0,255,0.04));
             background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
 
         /* HEADER */
@@ -42,85 +45,142 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            z-index: 1;
+            position: relative; z-index: 1;
+            flex-wrap: wrap; gap: 10px;
         }
-        .header h1 { font-size: 1.2rem; color: var(--matrix-green); margin: 0; }
-        .badge { background: var(--matrix-green); color: #000; padding: 5px 10px; font-size: 0.6rem; }
+        .header h1 { font-size: 1.1rem; color: var(--matrix-green); margin: 0; }
+        .header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .badge { background: var(--matrix-green); color: #000; padding: 5px 10px; font-size: 0.55rem; }
+        .badge-warn { background: var(--neon-yellow); color: #000; }
+        .time-badge { color: var(--matrix-green); font-size: 0.5rem; font-family: monospace; border: 1px solid var(--matrix-green); padding: 5px 10px; }
+
+        /* WELCOME BANNER */
+        .welcome-banner {
+            background: rgba(0,255,0,0.04); border: 1px solid rgba(0,255,0,0.15);
+            padding: 20px; margin-bottom: 30px;
+            font-family: monospace; font-size: 0.75rem; line-height: 2;
+            color: #aaa; position: relative; z-index: 1;
+        }
+        .welcome-banner .grn { color: var(--matrix-green); }
+        .welcome-banner .pink { color: var(--neon-pink); }
+        .cursor-blink { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
 
         /* GRID SYSTEM */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            position: relative;
-            z-index: 1;
-            align-items: start; /* Prevents stretching */
+            position: relative; z-index: 1;
+            align-items: start;
         }
 
         /* CARD DESIGN */
         .card {
             background: var(--glass);
-            border: 1px solid #333;
+            border: 1px solid #1a1a1a;
             transition: 0.3s;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-
-        /* The Visible Header of the Card */
-        .card-header {
-            padding: 30px;
-            cursor: pointer;
-            transition: 0.3s;
+        .card::before {
+            content: '';
+            position: absolute; top: 0; left: 0;
+            width: 2px; height: 0;
+            background: var(--matrix-green);
+            transition: height 0.3s;
         }
-        .card-header:hover { background: rgba(0, 243, 255, 0.05); }
-        
-        .card.active { border-color: var(--cyber-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
-        .card.active .card-header { background: var(--cyber-blue); color: #000; }
-        .card.active h2 { color: #000; }
-        .card.active p { color: #333; }
-        .card.active .card-icon { color: #000; }
+        .card.active::before,
+        .card:hover::before { height: 100%; }
 
-        .card-icon { font-size: 2rem; margin-bottom: 15px; display: block; }
-        .card h2 { font-size: 0.8rem; margin: 0 0 10px 0; color: var(--cyber-blue); }
-        .card p { font-size: 0.5rem; line-height: 1.6; color: #aaa; margin: 0; }
+        .card-header {
+            padding: 25px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .card-header:hover { background: rgba(0,243,255,0.03); }
+        .card.active { border-color: var(--cyber-blue); box-shadow: 0 0 20px rgba(0,243,255,0.08); }
+        .card.active .card-header { background: rgba(0,243,255,0.07); }
+        .card.active h2 { color: var(--cyber-blue); }
 
-        /* THE HIDDEN DRAWER (Content) */
+        .card-icon { font-size: 1.8rem; margin-bottom: 12px; display: block; }
+        .card h2 { font-size: 0.7rem; margin: 0 0 8px; color: var(--cyber-blue); }
+        .card p { font-size: 0.45rem; line-height: 1.6; color: #555; margin: 0; font-family: monospace; }
+
+        /* THE HIDDEN DRAWER */
         .card-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s ease-in-out;
-            background: rgba(0,0,0,0.5);
-            border-top: 1px solid #333;
+            background: rgba(0,0,0,0.6);
+            border-top: 1px solid #111;
         }
-        
-        .content-inner { padding: 20px; font-family: monospace; font-size: 0.8rem; line-height: 1.5; color: #ccc; }
-        
+        .content-inner { padding: 20px; font-family: monospace; font-size: 0.75rem; line-height: 1.6; color: #ccc; }
+
         /* CONTENT STYLING */
-        .log-entry { margin-bottom: 15px; border-left: 2px solid var(--matrix-green); padding-left: 10px; }
-        .log-date { color: var(--matrix-green); font-size: 0.6rem; margin-bottom: 5px; }
-        
+        .log-entry { margin-bottom: 15px; border-left: 2px solid var(--matrix-green); padding-left: 12px; }
+        .log-date { color: var(--matrix-green); font-size: 0.55rem; margin-bottom: 5px; }
+        .log-text { font-size: 0.6rem; color: #bbb; }
+
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .gallery-placeholder { background: #222; height: 100px; display: flex; align-items: center; justify-content: center; border: 1px dashed #555; color: #555; font-size: 0.6rem; }
+        .gallery-item {
+            background: #0a0a0a; height: 110px; display: flex; align-items: center;
+            justify-content: center; border: 1px dashed #1a1a1a; position: relative; overflow: hidden;
+        }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item-fb { color: #333; font-size: 0.45rem; text-align: center; padding: 5px; }
 
         /* LOCKED CARD */
-        .card.locked { opacity: 0.5; border-style: dashed; }
+        .card.locked { opacity: 0.5; border-style: dashed; border-color: rgba(139,0,3,0.4); }
         .card.locked .card-header { cursor: not-allowed; }
-        .card.locked:hover { border-color: var(--neon-pink); }
+        .card.locked:hover { border-color: var(--neon-pink); opacity: 0.7; }
         .card.locked h2 { color: var(--neon-pink); }
+
+        /* STAT BARS */
+        .stat-row { margin-bottom: 12px; }
+        .stat-row-label { font-size: 0.5rem; color: #888; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .stat-bar { height: 6px; background: #111; }
+        .stat-fill { height: 100%; background: var(--matrix-green); transition: width 1s ease; width: 0; }
+        .stat-fill.pink { background: var(--neon-pink); }
+        .stat-fill.blue { background: var(--cyber-blue); }
+        .stat-fill.yellow { background: var(--neon-yellow); }
+
+        /* VIBE LIST */
+        .vibe-item { padding: 10px 0; border-bottom: 1px solid #111; display: flex; justify-content: space-between; align-items: center; }
+        .vibe-name { font-size: 0.55rem; color: #ccc; }
+        .vibe-tag { font-size: 0.4rem; font-family: monospace; padding: 2px 8px; border: 1px solid #222; color: #555; }
+
+        /* SECRET NOTE */
+        .secret-note {
+            border: 1px solid rgba(255,51,102,0.3);
+            padding: 15px; background: rgba(255,51,102,0.03);
+            font-family: monospace; font-size: 0.65rem; line-height: 1.8; color: #888;
+        }
+        .secret-note .red { color: var(--neon-pink); }
 
         /* LOGOUT */
         .logout-btn {
             display: inline-block; margin-top: 50px; padding: 15px 30px;
             border: 2px solid var(--neon-pink); color: var(--neon-pink); text-decoration: none;
-            font-size: 0.8rem; transition: 0.3s; position: relative; z-index: 1;
+            font-size: 0.7rem; transition: 0.3s; position: relative; z-index: 1;
         }
         .logout-btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 20px var(--neon-pink); }
 
+        /* TICKER */
+        .vault-ticker {
+            background: rgba(0,255,0,0.03); border-top: 1px solid #0a1a0a; border-bottom: 1px solid #0a1a0a;
+            overflow: hidden; padding: 8px 0; margin-bottom: 30px; position: relative; z-index: 1;
+        }
+        .vault-ticker-text {
+            white-space: nowrap; animation: vticker 25s linear infinite;
+            font-size: 0.45rem; color: var(--matrix-green); font-family: monospace;
+        }
+        @keyframes vticker { from { transform: translateX(100vw); } to { transform: translateX(-200%); } }
+
         /* ANIMATIONS */
-        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(5px); } 50% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+        @keyframes shake { 0%,100%{transform:translate(0)} 25%{transform:translate(5px,0)} 75%{transform:translate(-5px,0)} }
         .shaking { animation: shake 0.3s; }
 
         @media (max-width: 600px) { body { padding: 20px; } .grid-container { grid-template-columns: 1fr; } }
@@ -130,103 +190,221 @@
 
     <div class="scanlines"></div>
 
+    <!-- HEADER -->
     <div class="header">
-        <h1>JODD_VAULT</h1>
-        <div class="badge">ACCESS: GRANTED</div>
+        <h1>JODD_VAULT <span style="color:#333; font-size:0.5rem;">v2.0</span></h1>
+        <div class="header-right">
+            <div class="time-badge" id="vault-clock">--:--:--</div>
+            <div class="badge">ACCESS: GRANTED</div>
+            <div class="badge badge-warn">CLASSIFIED</div>
+        </div>
+    </div>
+
+    <!-- WELCOME BANNER -->
+    <div class="welcome-banner">
+        <span class="grn">JODD_VAULT</span> <span style="color:#333">></span> Welcome back, user.<br>
+        <span class="grn">SYS</span> <span style="color:#333">></span> All systems nominal. <span class="pink">3</span> new entries detected.<br>
+        <span class="grn">SEC</span> <span style="color:#333">></span> You passed the gatekeeper. <span class="pink">// haan bhai, tu trusted hai</span><br>
+        <span class="grn">INFO</span> <span style="color:#333">></span> This vault contains private logs, visual data, and classified projects.<br>
+        <span class="cursor-blink">█</span>
+    </div>
+
+    <!-- VAULT TICKER -->
+    <div class="vault-ticker">
+        <div class="vault-ticker-text">
+            // JODD_VAULT ACCESS GRANTED // bhai tu toh trusted hai // classified data loaded // sigma protocols active // no cap fr fr //
+            visual data synced // project_mkure: STILL LOCKED // haan bhai, sab theek // vault v2.0 online //
+        </div>
     </div>
 
     <div class="grid-container">
-        
+
+        <!-- PERSONAL LOGS -->
         <div class="card" onclick="toggleCard(this)">
             <div class="card-header">
                 <span class="card-icon">📂</span>
                 <h2>PERSONAL_LOGS</h2>
-                <p>Daily thoughts and raw ideas.</p>
+                <p>Daily thoughts, raw ideas, and unfiltered entries.</p>
             </div>
             <div class="card-content">
                 <div class="content-inner">
                     <div class="log-entry">
-                        <div class="log-date">ENTRY_001</div>
-                        Started the Safehouse project. The interface is clean. No bugs detected yet.
+                        <div class="log-date">ENTRY_001 // SESSION INIT</div>
+                        <div class="log-text">Started the Safehouse project. The interface is clean. No bugs detected yet. bhai kya scene hai.</div>
                     </div>
                     <div class="log-entry">
-                        <div class="log-date">ENTRY_002</div>
-                        Need to upload more photos of the setup. The lighting was perfect today.
+                        <div class="log-date">ENTRY_002 // VISUAL UPDATE</div>
+                        <div class="log-text">Need to upload more photos of the setup. The lighting was perfect today. main character energy fr.</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-date">ENTRY_003 // VAULT_v2</div>
+                        <div class="log-text">Added meme vault, game zone, and vibe station. website is now certified unhinged. no cap. loot liya re.</div>
+                    </div>
+                    <div class="log-entry">
+                        <div class="log-date">ENTRY_004 // SIGMA_LOG</div>
+                        <div class="log-text">Hustle in silence. Let the results speak. Villain arc incoming. everybody else is an NPC. haan bhai.</div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- VISUAL DATA -->
         <div class="card" onclick="toggleCard(this)">
             <div class="card-header">
                 <span class="card-icon">👁️</span>
                 <h2>VISUAL_DATA</h2>
-                <p>Polaroids and gym progress.</p>
+                <p>Private gallery. Polaroids and progress shots.</p>
             </div>
             <div class="card-content">
                 <div class="content-inner">
                     <div class="gallery-grid">
-                        <div class="gallery-placeholder">bicepflex.jpg</div>
-                        <div class="gallery-placeholder">IMG_02</div>
-                        <div class="gallery-placeholder">IMG_03</div>
-                        <div class="gallery-placeholder">IMG_04</div>
+                        <div class="gallery-item">
+                            <img src="../bicepflex.jpg" alt="Bicep" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="gallery-item-fb" style="display:none">📸<br>bicepflex.jpg</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../safehouse/gallery/img2.jpg" alt="IMG_02" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="gallery-item-fb" style="display:none">📸<br>safehouse/gallery/img2.jpg</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../safehouse/gallery/img3.jpg" alt="IMG_03" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="gallery-item-fb" style="display:none">📸<br>safehouse/gallery/img3.jpg</div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="../safehouse/gallery/img4.jpg" alt="IMG_04" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="gallery-item-fb" style="display:none">📸<br>safehouse/gallery/img4.jpg</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.45rem; color:#333; margin-top:15px;">// add images to safehouse/gallery/ folder</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIGMA STATS -->
+        <div class="card" onclick="toggleCard(this)">
+            <div class="card-header">
+                <span class="card-icon">📊</span>
+                <h2>SIGMA_STATS</h2>
+                <p>Personal metrics. Raw numbers. Built different data.</p>
+            </div>
+            <div class="card-content">
+                <div class="content-inner">
+                    <div class="stat-row">
+                        <div class="stat-row-label"><span>SIGMA LEVEL</span><span style="color:var(--matrix-green)">100%</span></div>
+                        <div class="stat-bar"><div class="stat-fill" data-w="100"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-row-label"><span>RIZZ POINTS</span><span style="color:var(--neon-pink)">87%</span></div>
+                        <div class="stat-bar"><div class="stat-fill pink" data-w="87"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-row-label"><span>CODING XP</span><span style="color:var(--cyber-blue)">94%</span></div>
+                        <div class="stat-bar"><div class="stat-fill blue" data-w="94"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-row-label"><span>MEME IQ</span><span style="color:var(--neon-yellow)">99%</span></div>
+                        <div class="stat-bar"><div class="stat-fill yellow" data-w="99"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-row-label"><span>GRASS TOUCHING</span><span style="color:#555">2%</span></div>
+                        <div class="stat-bar"><div class="stat-fill" style="background:#333;" data-w="2"></div></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card locked" onclick="shakeCard(this)">
-            <div class="card-header">
-                <span class="card-icon">🔒</span>
-                <h2>PROJECT_MKURE</h2>
-                <p>Classified blueprints. [ACCESS DENIED]</p>
-            </div>
-        </div>
-
+        <!-- VIBE STATION LINK -->
         <div class="card" onclick="toggleCard(this)">
             <div class="card-header">
                 <span class="card-icon">🎵</span>
                 <h2>VIBE_STATION</h2>
-                <p>Curated playlists.</p>
+                <p>Curated playlists. Choose your era. No mid allowed.</p>
             </div>
             <div class="card-content">
                 <div class="content-inner">
-                    <p>> PLAYLIST 01: Coding (Synthwave)</p>
-                    <p>> PLAYLIST 02: Lifting (Phonk)</p>
-                    <p>> PLAYLIST 03: Late Night (Lofi)</p>
+                    <div class="vibe-item"><span class="vibe-name">PHONK MODE 😈</span><span class="vibe-tag" style="color:var(--neon-pink); border-color:rgba(255,51,102,0.3)">VILLAIN ERA</span></div>
+                    <div class="vibe-item"><span class="vibe-name">SYNTHWAVE CITY 🌆</span><span class="vibe-tag" style="color:var(--cyber-blue); border-color:rgba(0,243,255,0.3)">MAIN CHAR</span></div>
+                    <div class="vibe-item"><span class="vibe-name">LOFI GRIND ☕</span><span class="vibe-tag" style="color:var(--neon-purple); border-color:rgba(178,0,255,0.3)">CODING</span></div>
+                    <div class="vibe-item"><span class="vibe-name">BOLLYWOOD FLIP 🎭</span><span class="vibe-tag" style="color:var(--neon-yellow); border-color:rgba(255,230,0,0.3)">DESI</span></div>
+                    <a href="../vibes.html" style="display:block; margin-top:15px; color:var(--cyber-blue); font-size:0.55rem; text-decoration:none; border: 1px solid var(--cyber-blue); padding: 12px; text-align:center; transition:0.2s;">
+                        OPEN VIBE STATION →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECT_MKURE - LOCKED -->
+        <div class="card locked" onclick="shakeCard(this)">
+            <div class="card-header">
+                <span class="card-icon">🔒</span>
+                <h2>PROJECT_MKURE</h2>
+                <p>Classified blueprints. [ENCRYPTION: LEVEL 5] [ACCESS DENIED]</p>
+            </div>
+        </div>
+
+        <!-- SECRET MESSAGE -->
+        <div class="card" onclick="toggleCard(this)">
+            <div class="card-header">
+                <span class="card-icon">💌</span>
+                <h2>SECRET_NOTE</h2>
+                <p>A message from yagya. Only for you.</p>
+            </div>
+            <div class="card-content">
+                <div class="content-inner">
+                    <div class="secret-note">
+                        <span class="red">// TO: TRUSTED INDIVIDUAL</span><br>
+                        // FROM: YAGYA JODD<br><br>
+                        since you made it this far, bhai you're certified.<br>
+                        haan bhai — tu toh apna hai.<br><br>
+                        <span class="red">// the world is full of NPCs.</span><br>
+                        you chose the red pill.<br>
+                        sigma grindset in your DNA.<br><br>
+                        bas kar pagle, rula dega 😭<br>
+                        but for real, thanks for being here.<br><br>
+                        — yagya
+                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <a href="/" class="logout-btn">DISCONNECT</a>
+    <a href="/" class="logout-btn">← DISCONNECT</a>
 
     <script>
-        function toggleCard(card) {
-            // 1. Check if this card is already open
-            const isOpen = card.classList.contains('active');
-            
-            // 2. Close ALL cards first (Accordion style)
-            document.querySelectorAll('.card').forEach(c => {
-                c.classList.remove('active');
-                c.querySelector('.card-content').style.maxHeight = null;
-            });
+        /* CLOCK */
+        function updateClock() {
+            const now = new Date();
+            const t = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('vault-clock').textContent = t;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
 
-            // 3. If it wasn't open, open it now
+        /* CARD TOGGLE */
+        function toggleCard(card) {
+            const isOpen = card.classList.contains('active');
+            document.querySelectorAll('.card:not(.locked)').forEach(c => {
+                c.classList.remove('active');
+                const cc = c.querySelector('.card-content');
+                if (cc) cc.style.maxHeight = null;
+            });
             if (!isOpen) {
                 card.classList.add('active');
                 const content = card.querySelector('.card-content');
-                content.style.maxHeight = content.scrollHeight + "px";
+                if (content) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    // Animate stat bars
+                    card.querySelectorAll('.stat-fill').forEach(bar => {
+                        setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 100);
+                    });
+                }
             }
         }
 
         function shakeCard(card) {
-            // Visual feedback for locked items
             card.classList.add('shaking');
-            setTimeout(() => {
-                card.classList.remove('shaking');
-            }, 300);
+            setTimeout(() => card.classList.remove('shaking'), 300);
         }
     </script>
 
