@@ -582,8 +582,9 @@
 
         // Touch/swipe for mobile
         let touchStartX = 0;
-        dodgeCanvas.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; e.preventDefault(); }, {passive:false});
+        dodgeCanvas.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; if (dodgeRunning) e.preventDefault(); }, {passive:false});
         dodgeCanvas.addEventListener('touchmove', e => {
+            if (!dodgeRunning) return;
             const dx = e.touches[0].clientX - touchStartX;
             playerX += dx * 0.5;
             playerX = Math.max(0, Math.min(CW - playerW, playerX));

@@ -131,7 +131,10 @@
             cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02);
         }
         .mood-card:hover { transform: translateY(-4px); }
-        .mood-card.active-mood { }
+        .mood-card.active-mood {
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.05);
+            transform: translateY(-4px) scale(1.02);
+        }
         .mood-emoji { font-size: 2rem; display: block; margin-bottom: 10px; }
         .mood-name { font-size: 0.5rem; margin-bottom: 5px; }
         .mood-desc { font-size: 0.35rem; color: #555; font-family: monospace; }
@@ -270,7 +273,7 @@
                 </div>
                 <span class="pl-tag tag-lofi">LOFI</span>
             </div>
-            <div class="playlist-item" onclick="loadTrack('vibe-sigma', 'SIGMA RISE 🗿', 'motivational phonk // grindset music // hustle in silence', 'tag-lofi', 'SIGMA', this)">
+            <div class="playlist-item" onclick="loadTrack('vibe-sigma', 'SIGMA RISE 🗿', 'motivational phonk // grindset music // hustle in silence', 'tag-synth', 'SIGMA', this)">
                 <div class="pl-num">04</div>
                 <div class="pl-info">
                     <div class="pl-name">SIGMA RISE</div>

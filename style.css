@@ -23,7 +23,9 @@ body {
     margin: 0;
     overflow-x: hidden;
     overflow-y: hidden; /* hidden during intro, enabled via JS */
-    cursor: none;
+}
+@media (pointer: fine) {
+    body { cursor: none; }
 }
 
 /* ---- CUSTOM CURSOR ---- */

@@ -311,7 +311,9 @@ setInterval(() => {
 function duplicateTickerTrack() {
     const track = document.getElementById('ticker-track');
     if (!track) return;
-    track.innerHTML += track.innerHTML;
+    const clone = track.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    track.parentElement.appendChild(clone);
 }
 
 /* --- ROBOT HOVER EASTER EGG --- */
