@@ -39,8 +39,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -53,6 +51,13 @@ jobs:
 
       - name: Build static export
         run: npm run build
+
+      - name: Verify exported routes and domain
+        run: |
+          for route in work services systems about contact work/priya work/quantumvault; do
+            test -f "out/$route/index.html" || exit 1
+          done
+          test "$(cat out/CNAME)" = "yagyachauhan.me"
 
       - name: Ensure no Jekyll processing
         run: touch out/.nojekyll
