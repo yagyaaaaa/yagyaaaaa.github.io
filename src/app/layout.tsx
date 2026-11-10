@@ -1,57 +1,67 @@
 import type { Metadata } from "next";
+import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { ScrollProgress } from "@/components/ui/scroll-progress";
-
+import { SiteNavigation } from "@/components/site-navigation";
+import { PageMotion } from "@/components/scroll-experience";
+const space = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500"],
+  variable: "--font-heading",
+  display: "swap",
+});
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+  display: "swap",
+});
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
+});
 export const metadata: Metadata = {
-  title: "Yagya Chauhan — Builder & Founder",
-  description:
-    "17-year-old builder from Mumbai. Founder of QuantumReach. Building at the intersection of AI automation, web systems, local AI, and startup execution.",
-  keywords: [
-    "Yagya Chauhan",
-    "QuantumReach",
-    "AI automation",
-    "web development",
-    "Mumbai",
-    "builder",
-    "founder",
-  ],
-  authors: [{ name: "Yagya Chauhan" }],
   metadataBase: new URL("https://yagyachauhan.me"),
+  title: {
+    default: "Yagya Chauhan — Founder & Systems Architect",
+    template: "%s | Yagya Chauhan",
+  },
+  description:
+    "AI receptionists, business automation, and web platforms. Yagya Chauhan builds the complete system—from the interface to the infrastructure. Founder of QuantumReach, Mumbai.",
   openGraph: {
-    title: "Yagya Chauhan — Builder & Founder",
-    description:
-      "17-year-old builder from Mumbai. Founder of QuantumReach. Building at the intersection of AI automation, web systems, local AI, and startup execution.",
-    url: "https://yagyachauhan.me",
-    siteName: "Yagya Chauhan",
-    locale: "en_US",
     type: "website",
+    siteName: "Yagya Chauhan",
+    locale: "en_IN",
+    images: [{ url: "/share.png", width: 1200, height: 630 }],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Yagya Chauhan — Builder & Founder",
-    description:
-      "17-year-old builder from Mumbai. Founder of QuantumReach. Building at the intersection of AI automation, web systems, local AI, and startup execution.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  twitter: { card: "summary_large_image", images: ["/share.png"] },
+  robots: { index: true, follow: true },
 };
-
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="antialiased bg-[#0a0a0a] text-[#e8e8e8]">
-        <ScrollProgress />
-        <Navbar />
+    <html
+      lang="en"
+      className={`${space.variable} ${inter.variable} ${mono.variable}`}
+    >
+      <body>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <SiteNavigation />
+        <PageMotion />
         {children}
-        <Footer />
+        <footer className="container footer">
+          <Link href="/" className="wordmark">
+            YAGYA CHAUHAN<span className="wordmark-dot">.</span>
+          </Link>
+          <p>Independent thinking. Complete systems.</p>
+          <Link href="/contact/">Let’s talk ↗</Link>
+          <span className="mono muted">© {new Date().getFullYear()}</span>
+        </footer>
       </body>
     </html>
   );
