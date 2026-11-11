@@ -7,8 +7,8 @@ export const SITE_CONFIG = {
   links: {
     github: "https://github.com/yagyaaaaa",
     linkedin: "https://linkedin.com/in/yagyachauhan",
-    email: "mailto:yagya@quantumreach.in",
-    quantumreach: "https://quantumreach.in",
+    email: "mailto:yagya@quantumreach.tech",
+    quantumreach: "https://quantumreach.tech",
   },
 };
 
@@ -30,7 +30,7 @@ export const PROJECTS = [
       "AI automation and premium web experience studio helping businesses build cleaner digital systems, better websites, and stronger automation workflows.",
     priority: "Turning brand and concept into client acquisition and service delivery.",
     milestone: "First repeatable client acquisition system.",
-    link: "https://quantumreach.in",
+    link: "https://quantumreach.tech",
   },
   {
     id: "jarvislab",
