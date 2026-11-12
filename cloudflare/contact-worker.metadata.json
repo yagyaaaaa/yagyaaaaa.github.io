@@ -1,0 +1,21 @@
+{
+  "main_module": "contact-worker.mjs",
+  "compatibility_date": "2026-11-12",
+  "bindings": [
+    {
+      "type": "send_email",
+      "name": "CONTACT_EMAIL",
+      "destination_address": "yagya@quantumreach.tech"
+    },
+    {
+      "type": "ratelimit",
+      "name": "CONTACT_LIMIT",
+      "namespace_id": "1102552451",
+      "simple": { "limit": 5, "period": 60 }
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "invocation_logs": false }
+  }
+}
