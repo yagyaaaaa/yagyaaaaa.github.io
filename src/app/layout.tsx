@@ -25,7 +25,7 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://yagyachauhan.me"),
   title: {
-    default: "Yagya Chauhan — Founder & Systems Architect",
+    default: "Yagya Chauhan | Founder of QuantumReach",
     template: "%s | Yagya Chauhan",
   },
   description:
