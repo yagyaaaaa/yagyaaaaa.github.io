@@ -1,6 +1,8 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import type { FormEvent } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export function Workflow() {
   const [run, setRun] = useState(0);
@@ -200,11 +202,52 @@ export function Systems() {
   );
 }
 export function ContactForm() {
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
+  const pending = useRef(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending.current) return;
+
+    const form = event.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+    const fallback = "Couldn’t send your brief. Please try again or";
+    pending.current = true;
+    setStatus("sending");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+
+      if (response.ok && result?.ok === true) {
+        form.reset();
+        setStatus("sent");
+      } else {
+        setError(
+          typeof result?.error === "string" ? `${result.error} You can also` : fallback,
+        );
+        setStatus("error");
+      }
+    } catch {
+      setError(fallback);
+      setStatus("error");
+    } finally {
+      pending.current = false;
+    }
+  }
+
   return (
     <form
       className="contact-form"
+      method="post"
+      action="/api/contact"
       aria-describedby="form-status"
-      onSubmit={(event) => event.preventDefault()}
+      onSubmit={handleSubmit}
     >
       <div className="form-row">
         <label>
@@ -268,16 +311,23 @@ export function ContactForm() {
           </select>
         </label>
       </div>
-      <button type="submit" className="button primary" disabled>
-        Send project brief <span>↗</span>
+      <div hidden>
+        <label>
+          Leave this field empty
+          <input name="website" autoComplete="off" tabIndex={-1} />
+        </label>
+      </div>
+      <button type="submit" className="button primary" disabled={status === "sending"}>
+        {status === "sending" ? "Sending…" : <>Send project brief <span>↗</span></>}
       </button>
-      <p id="form-status" className="form-note">
-        The form is not accepting submissions yet. Please{" "}
-        <a href="mailto:yagya@quantumreach.tech" className="inline-link">
-          email yagya@quantumreach.tech
-        </a>{" "}
-        to discuss your project.
-      </p>
+      <div id="form-status" role="status" aria-atomic="true">
+        {status === "sent" && <p className="form-feedback">Your project brief was sent.</p>}
+        {status === "error" && (
+          <p className="form-feedback">
+            {error} <a href={SITE_CONFIG.links.email}>email me directly</a>.
+          </p>
+        )}
+      </div>
     </form>
   );
 }
