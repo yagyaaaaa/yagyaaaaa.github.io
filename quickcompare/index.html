@@ -12,14 +12,40 @@
 <style>
 :root{--bg:#131a23;--panel:#1b2634;--muted:#b4c3d4}.hero{background:radial-gradient(ellipse at 90% 15%,#365779,transparent 65%),#1b2b40}.hero .actions a{display:inline-flex;align-items:center;min-height:44px;padding:.55rem .7rem;color:#d8e9f9}.hero p{font-size:1.03rem}.modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;overflow:visible}.modes button{white-space:normal;text-align:left}.modes button[aria-pressed=true]{font-weight:750}.cart-jump{display:inline-flex;align-items:center;min-height:44px;padding:.48rem .7rem;border:1px solid #466585;border-radius:9px;color:var(--blue);font-weight:700}.story{padding:14px 16px;margin:16px 0;background:#21364a;border:1px solid #3c5874;border-radius:12px}.story p{margin:.4rem 0 0;color:#dae6f4}.story-steps{list-style:none;margin:0;padding:0;counter-reset:steps}.story-steps li{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:10px;padding:14px 0;border-bottom:1px solid var(--edge);counter-increment:steps}.story-steps li::before{content:counter(steps);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;color:var(--lime);background:#2d3b2d;font-weight:800}.story-steps p,.how-grid p{margin-bottom:0}.how-grid{display:grid;gap:10px;margin:16px 0}.section details{margin:16px 0;border:1px solid var(--edge);padding:12px 14px;border-radius:10px}.section summary{cursor:pointer;font-weight:750}.section details p{margin:10px 0 0}.section .actions{margin-top:14px}#cart-title{scroll-margin-top:14px}#plans-title{scroll-margin-top:14px}@media(min-width:720px){.modes{display:flex}.how-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.story-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.story-steps li{background:#151f2b;border:1px solid var(--edge);padding:13px;border-radius:10px}}
 </style>
+<style>
+:root{--bg:#10121b;--panel:#1a1e2b;--edge:#34394d;--muted:#b2bacd;--lime:#9bf1d6;--blue:#c5bbff}body{background:radial-gradient(ellipse at top,#242041 0,transparent 550px),var(--bg)}.top{background:#151723}.hero{padding:clamp(23px,4vw,48px);background:radial-gradient(ellipse at 100% 0,#403667,transparent 66%),#202035;border-color:#504771}.hero:after{opacity:.45}.hero h1{font-size:clamp(2.25rem,5vw,4.1rem)}.hero p{color:#d7d7ed}.primary{color:#102821}.modes{margin:12px 0}.mode-picker{display:grid;grid-template-columns:1fr 1fr;margin-top:20px}.mode-picker button{background:#1c2030;padding:12px;line-height:1.3}.mode-picker button strong,.mode-picker button small{display:block}.mode-picker button small{font-weight:400;margin-top:3px}.mode-picker button[aria-pressed=true],.utility-nav button[aria-pressed=true]{background:#233435}.utility-nav{display:flex;flex-wrap:wrap;margin-top:0}.utility-nav button{background:none;font-size:.86rem}.product,.stage,.scenario{background:#151925}.product-title{background:#23283a}.tile{background:#333657}.tag.good{background:#233c35}.notice{background:#282941}.list-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#151925;padding:10px;border:1px solid var(--edge);border-radius:10px}.list-row>div:first-child{min-width:0}.stepper{display:flex;align-items:center;gap:7px;flex:none}.stepper button{min-width:44px;padding:5px}.stepper output{min-width:1.35em;text-align:center}.plan-option{padding:12px;border:1px solid var(--edge);border-radius:10px;background:#151925;margin:10px 0}.plan-option.best{border-color:#69b69e;background:#1c312d}.plan-option h3{margin:0}.plan-option p{margin:.45rem 0}.plan-price{font-size:1.3rem;color:var(--lime);font-weight:850;white-space:nowrap}.plan-option summary,.store-breakdown summary{cursor:pointer;padding:8px 0}.store-breakdown{margin-top:14px}.plan-option button{margin-top:8px}.store-breakdown li{padding:6px 0}.plan-store{border-top:1px solid var(--edge);padding:6px 0}.plan-store small{display:block}.cart-jump{border-color:#55507c}.results-meta{font-size:.86rem}.result-panel{scroll-margin-top:12px}#result-jump{margin-top:12px}button:disabled{cursor:default;opacity:.48}#list-feedback{min-height:1.3em;margin:.4rem 0}.utility-nav .modes{margin-top:0}@media(min-width:900px){#view-basket{grid-template-columns:minmax(0,1fr) minmax(340px,.85fr)}}@media(max-width:400px){.utility-nav{gap:4px}.utility-nav button{padding-inline:.52rem}.mode-picker button{font-size:.94rem}}
+</style>
 </head>
 <body>
 <header class="top"><div class="wrap head"><a href="#top" class="brand"><span class="mark" aria-hidden="true">↯</span>QuickCompare</a><div class="line"><span class="flag">Interactive concept</span><select id="address" aria-label="Delivery address"><option value="home">⌂ Home · Borivali</option><option value="office">▦ Office · BKC</option></select></div></div></header>
 <main class="wrap" id="top">
 <section class="hero"><div class="eyebrow">Interactive demo</div><h1>Four delivery apps.<br><span>One basket.</span></h1><p>Get a cable from Blinkit, rice from BigBasket, and paneer from Instamart. See each store’s bill before you order, all from one screen.</p><div class="actions"><button class="primary" id="start-example">Try a sample basket</button><a href="#workspace" id="browse">Browse products ↓</a></div><small>No sign-up or payment needed.</small></section>
-<nav class="modes" id="workspace" aria-label="Workflow"><button data-view="compare" aria-pressed="true">Shop & compare</button><button data-view="schedule" aria-pressed="false">Repeat deliveries</button><button data-view="connections" aria-pressed="false">Link stores</button><button data-view="architecture" aria-pressed="false">How it works</button></nav>
+<div id="workspace">
+  <nav class="modes mode-picker" aria-label="Shopping modes">
+    <button data-view="compare" aria-pressed="true"><strong>Item prices</strong><small>Compare one product across stores</small></button>
+    <button data-view="basket" aria-pressed="false"><strong>Whole cart</strong><small>Find the lowest total after fees</small></button>
+  </nav>
+  <nav class="modes utility-nav" aria-label="More tools"><button data-view="schedule" aria-pressed="false">Repeat deliveries</button><button data-view="connections" aria-pressed="false">Link stores</button><button data-view="architecture" aria-pressed="false">How it works</button></nav>
+</div>
 <section id="view-compare" class="dashboard"><div class="panel"><div class="between"><h2>Compare products</h2><span class="tag">Sample data</span></div><p>Check stock and pack size at your chosen address. Each store has its own fees and delivery estimate.</p><div class="toolbar"><input id="search" type="search" placeholder="Search paneer, cables, soda…" aria-label="Search catalog"><select id="category" aria-label="Product category"><option value="all">All categories</option><option>Dairy & eggs</option><option>Electronics</option><option>Pantry</option><option>Drinks</option></select></div><div class="toolbar"><button id="mixed">Load mixed basket</button><button id="refresh">Refresh sample quotes</button></div><p id="quote" class="notice" role="status"></p><div style="height:12px"></div><div class="catalog" id="catalog"></div></div>
-<aside class="panel cart-card" aria-labelledby="cart-title"><div class="between"><h2 id="cart-title">Unified cart</h2><span class="tag" id="count"></span></div><small id="cart-address"></small><div id="cart"></div><button id="review" class="primary full" type="button" disabled>Review demo checkout</button><small style="display:block;margin-top:8px">Stores fulfill and charge their orders separately.</small></aside></section>
+<aside class="panel cart-card" aria-labelledby="cart-title"><div class="between"><h2 id="cart-title">Unified cart</h2><span class="tag" id="count"></span></div><small id="cart-address"></small><div id="cart"></div><button id="review" class="primary full" type="button" disabled>Review demo checkout</button><button id="compare-current" class="full" style="margin-top:8px" type="button" disabled>Compare prices for these items</button><small style="display:block;margin-top:8px">Stores fulfill and charge their orders separately.</small></aside></section>
+<section id="view-basket" class="dashboard" hidden>
+  <div class="panel">
+    <div class="between"><h2>Build your list</h2><span class="tag" id="list-count" aria-live="polite"></span></div>
+    <p>Choose the items and quantities. We’ll compare which stores can fill the list at your address.</p>
+    <div class="toolbar"><button id="list-example" class="primary">Try a sample list</button><button id="list-import">Copy from my cart</button><button id="list-clear">Clear list</button></div>
+    <div class="toolbar"><input id="list-search" type="search" placeholder="Find a product…" aria-label="Search products for your list"></div>
+    <p id="list-feedback" class="results-meta" role="status"></p>
+    <div id="list-products" class="stack"></div>
+    <a href="#comparison-title" id="result-jump" class="cart-jump">See cart prices ↓</a>
+  </div>
+  <aside class="panel result-panel" aria-labelledby="comparison-title">
+    <h2 id="comparison-title">Compare cart totals</h2>
+    <p id="result-address"></p>
+    <p id="replace-note" class="results-meta" hidden>Choosing a result replaces the items in your checkout cart.</p>
+    <div id="results"></div>
+  </aside>
+</section>
 <section id="view-schedule" class="dashboard" hidden><div class="panel"><h2>Recurring orders</h2><p>Schedule the full basket, including items from multiple stores. Choose where, when, and how you want to pay.</p><div class="toolbar"><button data-preset="breakfast">Breakfast essentials</button><button data-preset="office">Office soda</button><button data-preset="cart">Use current cart</button></div><div class="scenario" id="plan-items"></div><form id="schedule-form"><div class="fields" style="margin-top:13px"><label>Delivery address<select id="plan-address"><option value="home">Home · Borivali</option><option value="office">Office · BKC</option></select></label><label>Preferred delivery window<select id="window"><option>8:00–9:00 AM</option><option>12:00–1:00 PM</option><option>4:00–5:00 PM</option><option>7:00–8:00 PM</option></select></label><label>Payment preference<select id="payment"><option>Cash on delivery</option><option>Prepaid authorization</option></select></label><label>Maximum total per run (₹)<input type="number" id="cap" value="300" min="1" max="100000" required></label></div><div style="margin-top:13px">Delivery days</div><div class="days" id="days"></div><button class="primary" type="submit">Save demo schedule</button><p class="notice" id="plan-status" role="status">Times are preferred windows in IST. Store availability determines the actual ETA.</p></form></div><aside class="panel"><h2>Saved schedules</h2><div id="plans"></div><p class="notice">At run time the proposed service checks stock, the price cap, delivery ETA, account authorization, and payment eligibility. If any check fails, that store’s order waits for your decision.</p></aside></section>
 <section id="view-connections" class="dashboard" hidden><div class="panel"><h2>Linked stores</h2><p>Connect each store once. The proposed connection flow requests permission through the provider and shows the current status here.</p><div id="connections"></div><p class="notice">These controls simulate consent and revocation. This demo accepts no passwords, OTPs, cookies, or payment details.</p></div><aside class="panel"><h2>One address book</h2><p>Pick Home or Office from the header. A production connector would map that saved address to each store and confirm serviceability before quoting or submitting an order.</p></aside></section>
 <section id="view-architecture" class="panel section" hidden>
@@ -65,6 +91,9 @@ const presets = {
 };
 const weekdays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 let address='home', basket={}, linked=new Set(), revision=0, verified=false, preset='breakfast', days=new Set(presets.breakfast.days), plans=[];
+const listStorageKey='quickcompare.shopping-list.v1';
+const storeKeys=Object.keys(stores);
+let shoppingList=readList(), cartOptions=[];
 const money = amount => `₹${amount.toLocaleString('en-IN')}`;
 const locationName = key => key==='home' ? 'Home · Borivali' : 'Office · BKC';
 const product = key => catalog.find(row=>row[0]===key);
@@ -98,6 +127,97 @@ function summarize(items,place=address) {
   }
   return groups;
 }
+function readList() {
+  try {
+    const saved=JSON.parse(localStorage.getItem(listStorageKey));
+    return Object.fromEntries(catalog.map(([id])=>[id,saved?.[id]]).filter(([,qty])=>Number.isInteger(qty)&&qty>0&&qty<=30));
+  } catch {return {};}
+}
+function saveList(message='') {
+  try {localStorage.setItem(listStorageKey,JSON.stringify(shoppingList));} catch {}
+  $('list-feedback').textContent=message;
+  renderWholeCart();
+}
+function getCartOptions(list,place=address) {
+  const lines=Object.entries(list);
+  if(!lines.length)return {ranked:[],single:[]};
+  const bestByCount=new Map();
+  const single=storeKeys.map(store=>({
+    store,
+    missing:lines.filter(([id])=>price(id,store,place)===null).map(([id])=>id),
+    items:Object.fromEntries(lines.map(([id,qty])=>[`${id}:${store}`,qty]))
+  }));
+  function planFor(items) {
+    const groups=Object.entries(summarize(items,place));
+    const total=groups.reduce((sum,[,group])=>sum+group.total,0);
+    const eta=Math.max(...groups.map(([store])=>stores[store][5]+(place==='office'?3:0)));
+    return {items,groups,total,eta};
+  }
+  const choice={};
+  // Explore every available store assignment for the small demo catalog.
+  function visit(index) {
+    if(index===lines.length) {
+      const candidate=planFor({...choice});
+      const count=candidate.groups.length;
+      const best=bestByCount.get(count);
+      if(!best||candidate.total<best.total||(candidate.total===best.total&&candidate.eta<best.eta))bestByCount.set(count,candidate);
+      return;
+    }
+    const [id,qty]=lines[index];
+    for(const store of storeKeys) {
+      if(price(id,store,place)===null)continue;
+      const key=`${id}:${store}`;
+      choice[key]=qty;
+      visit(index+1);
+      delete choice[key];
+    }
+  }
+  visit(0);
+  return {
+    ranked:[...bestByCount.values()].sort((a,b)=>a.total-b.total||a.groups.length-b.groups.length||a.eta-b.eta),
+    single:single.map(entry=>({...entry,plan:entry.missing.length?null:planFor(entry.items)}))
+  };
+}
+function renderListProducts() {
+  const query=$('list-search').value.trim().toLowerCase();
+  $('list-products').innerHTML=catalog.filter(([,name,size,category])=>`${name} ${size} ${category}`.toLowerCase().includes(query)).map(([id,name,size,,icon])=>{
+    const qty=shoppingList[id]||0;
+    const available=storeKeys.filter(store=>price(id,store)!==null).length;
+    return `<div class="list-row"><div class="line"><span class="tile" aria-hidden="true">${icon}</span><div><strong>${name}</strong><br><small>${size} · ${available} ${available===1?'store':'stores'}</small></div></div><div class="stepper"><button data-list-id="${id}" data-delta="-1" aria-label="Remove one ${name} from list" ${qty?'':'disabled'}>−</button><output aria-label="${name} quantity">${qty}</output><button data-list-id="${id}" data-delta="1" aria-label="Add one ${name} to list" ${qty===30?'disabled':''}>+</button></div></div>`;
+  }).join('')||'<p>No products found. Try another search.</p>';
+}
+function renderWholeCart() {
+  renderListProducts();
+  const count=Object.values(shoppingList).reduce((total,qty)=>total+qty,0);
+  $('list-count').textContent=`${count} ${count===1?'item':'items'}`;
+  $('list-import').disabled=!Object.keys(basket).length;
+  $('replace-note').hidden=!count||!Object.keys(basket).length;
+  $('list-clear').disabled=!count;
+  $('list-example').disabled=Boolean(count);
+  $('result-jump').hidden=!count;
+  $('result-address').textContent=`${locationName(address)} · Includes delivery and handling`;
+  const {ranked,single}=getCartOptions(shoppingList);
+  cartOptions=ranked;
+  $('results').innerHTML=count?renderCartOptions(ranked,single):'<p class="empty">Add items to see totals here, or try the sample list.</p>';
+  if(ranked.length)$('result-jump').textContent=`See prices · from ${money(ranked[0].total)} ↓`;
+}
+function renderCartOptions(ranked,single) {
+  const complete=single.filter(row=>row.plan).sort((a,b)=>a.plan.total-b.plan.total);
+  const unavailable=single.filter(row=>!row.plan);
+  let results=ranked.map((plan,index)=>{
+    const count=plan.groups.length;
+    const label=index===0?'Lowest total':`Best with ${count} ${count===1?'store':'stores'}`;
+    const difference=plan.total-ranked[0].total;
+    const breakdown=plan.groups.map(([store,g])=>`<div class="plan-store"><div class="between">${provider(store)}<strong>${money(g.total)}</strong></div><small>${g.rows.map(row=>`${row.qty} × ${product(row.id)[1]}`).join(' · ')}</small><small>Items ${money(g.subtotal)} · Delivery ${money(g.delivery)} · Handling ${money(g.handling)}</small></div>`).join('');
+    return `<article class="plan-option ${index===0?'best':''}"><div class="between"><h3>${label}</h3><span class="plan-price">${money(plan.total)}</span></div><p class="results-meta">${count} ${count===1?'delivery':'deliveries'} · Last arrival ~${plan.eta} min${difference?` · ${money(difference)} more`:''}</p><details><summary>Items and fees by store</summary>${breakdown}</details><button data-use-plan="${index}" class="${index===0?'primary':''} full">${index===0?'Use cheapest cart':'Use this cart'}</button></article>`;
+  }).join('');
+  if(!results)results='<p class="notice">Some items are unavailable at this address. Change the address or edit the list.</p>';
+  const storeRows=complete.map(({store,plan})=>{
+    const index=cartOptions.push(plan)-1;
+    return `<li><div class="between">${provider(store)}<strong>${money(plan.total)}</strong></div><button data-use-plan="${index}">Use ${stores[store][0]} cart</button></li>`;
+  }).concat(unavailable.map(({store,missing})=>`<li>${provider(store)}<br><small>Missing: ${missing.map(id=>product(id)[1]).join(', ')}</small></li>`)).join('');
+  return results+`<details class="store-breakdown"><summary>Compare each store on its own</summary><ul>${storeRows}</ul></details><p class="results-meta">Sample estimates. Each product’s full quantity comes from one store. Checkout rechecks prices.</p>`;
+}
 function renderCatalog() {
   const query=$('search').value.trim().toLowerCase(), category=$('category').value;
   const results=catalog.filter(([,name,size,type])=>(category==='all'||type===category)&&`${name} ${size} ${type}`.toLowerCase().includes(query));
@@ -115,8 +235,9 @@ function renderCart() {
   $('cart-address').textContent=`Delivering to ${locationName(address)}`;
   $('cart').innerHTML=groups.length?groups.map(([store,g])=>`<div class="cart-group"><div class="between">${provider(store)}<strong>${money(g.total)}</strong></div>${g.rows.map(row=>`<div class="cart-item"><div>${product(row.id)[1]}<br><small>${row.unit===null?'Unavailable at this address':`${row.qty} × ${money(row.unit)}`}</small></div><div class="line"><button data-remove="${row.key}" aria-label="Remove one ${product(row.id)[1]}">−</button><button data-add="${row.key}" aria-label="Add one ${product(row.id)[1]}" ${row.unit===null?'disabled':''}>+</button></div></div>`).join('')}<small>Items ${money(g.subtotal)} · Delivery ${money(g.delivery)} · Handling ${money(g.handling)}</small><small>${g.remaining?`${money(g.remaining)} more at ${stores[store][0]} for free delivery`:'Free delivery unlocked · Handling still applies'}</small></div>`).join('')+`<div class="totals"><p class="between total"><span>Estimated total</span><span>${money(total)}</span></p><small>${groups.length} separate ${groups.length===1?'order':'orders'}${hasUnavailable?' · Remove unavailable items to continue':''}</small></div>`:'<p class="empty">Add an offer or load the mixed basket.</p>';
   $('review').disabled=!groups.length||hasUnavailable;
+  $('compare-current').disabled=!groups.length;
 }
-function render() {renderCatalog();renderCart();renderPlanItems();}
+function render() {renderCatalog();renderCart();renderPlanItems();renderWholeCart();}
 function setQuote(message) {$('quote').textContent=message;}
 function refreshQuotes() {
   revision++; verified=true; render();
@@ -189,6 +310,22 @@ document.addEventListener('click',event=>{
   const button=event.target.closest('button'); if(!button)return;
   const d=button.dataset;
   if(d.view)showView(d.view);
+  if(d.listId) {
+    const qty=(shoppingList[d.listId]||0)+Number(d.delta);
+    if(qty>0)shoppingList[d.listId]=Math.min(qty,30);else delete shoppingList[d.listId];
+    saveList();
+    const replacement=$('list-products').querySelector(`[data-list-id="${d.listId}"][data-delta="${d.delta}"]`);
+    (replacement.disabled?replacement.parentElement.querySelector('button:not(:disabled)'):replacement)?.focus({preventScroll:true});
+  }
+  if(d.usePlan!==undefined) {
+    const plan=cartOptions[Number(d.usePlan)];
+    if(!plan)return;
+    basket={...plan.items};
+    verified=false;
+    render();
+    showView('compare');
+    goTo('cart-title');
+  }
   if(d.add)updateBasket(d.add,1);
   if(d.remove)updateBasket(d.remove,-1);
   if(d.link) {if(linked.has(d.link)) linked.delete(d.link); else linked.add(d.link);renderConnections();}
@@ -217,6 +354,27 @@ $('schedule-form').addEventListener('submit',event=>{
 $('address').addEventListener('change',event=>{address=event.target.value;verified=false;render();setQuote(`Showing sample offers for ${locationName(address)}. Stock, ETA and prices can change by address.`);});
 $('search').addEventListener('input',renderCatalog);
 $('category').addEventListener('change',renderCatalog);
+$('list-search').addEventListener('input',renderListProducts);
+$('list-clear').addEventListener('click',()=>{shoppingList={};saveList('List cleared.');$('list-example').focus();});
+$('list-import').addEventListener('click',()=>{
+  shoppingList={};
+  for(const [key,qty] of Object.entries(basket)) {
+    const [id]=key.split(':');
+    shoppingList[id]=Math.min((shoppingList[id]||0)+qty,30);
+  }
+  saveList('Copied your cart items into the comparison list.');
+});
+$('compare-current').addEventListener('click',()=>{
+  $('list-import').click();
+  showView('basket');
+  goTo('comparison-title');
+});
+$('list-example').addEventListener('click',()=>{
+  shoppingList={paneer:1,curd:1,eggs:1,soda:2};
+  saveList('Sample list added.');
+  goTo('comparison-title');
+});
+$('result-jump').addEventListener('click',event=>{event.preventDefault();goTo('comparison-title');});
 function goTo(id) {
   const target=$(id);
   target.tabIndex=-1;
@@ -232,7 +390,11 @@ function loadExample() {
   }
   goTo('cart-title');
 }
-['start-example','mixed','try-basket'].forEach(id=>$(id).addEventListener('click',loadExample));
+['mixed','try-basket'].forEach(id=>$(id).addEventListener('click',loadExample));
+$('start-example').addEventListener('click',()=>{
+  showView('basket');
+  if(!Object.keys(shoppingList).length)$('list-example').click();else goTo('comparison-title');
+});
 $('browse').addEventListener('click',()=>showView('compare'));
 $('try-breakfast').addEventListener('click',()=>{showView('schedule');setPreset('breakfast');goTo('workspace');});
 $('refresh').addEventListener('click',refreshQuotes);
