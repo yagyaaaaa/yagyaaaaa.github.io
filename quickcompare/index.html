@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101721">
+<meta name="description" content="An interactive concept for comparing instant-delivery offers, splitting a basket across apps, and setting up recurring deliveries.">
+<title>QuickCompare — Your quick-commerce desk</title>
+<style>
+:root{color-scheme:dark;--bg:#101721;--panel:#182331;--edge:#2d3c4e;--muted:#a5b5c7;--fg:#f3f7fb;--lime:#d4fa77;--blue:#94c7ff;font-family:Inter,system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg)}button,input,select{font:inherit}button,a,select{touch-action:manipulation}button,select,input{color:inherit}a{color:inherit;text-decoration:none}button,select,input{border:1px solid var(--edge);border-radius:9px;background:#101a25;padding:.64rem .8rem;min-height:44px}button,select{cursor:pointer}button:hover,button[aria-pressed=true]{border-color:var(--lime)}:focus-visible{outline:2px solid var(--blue);outline-offset:3px}p{line-height:1.55;color:var(--muted)}h1,h2,h3,p{margin-top:0}h2{font-size:clamp(1.35rem,3vw,1.8rem);letter-spacing:-.04em;margin-bottom:.45rem}h3{font-size:1rem;margin-bottom:.3rem}.wrap{width:min(1160px,100% - 32px);margin:auto}.top{border-bottom:1px solid var(--edge);background:#111a25}.head,.toolbar,.between,.line,.actions{display:flex;align-items:center;gap:.65rem}.head{min-height:65px;justify-content:space-between;flex-wrap:wrap;padding:9px 0}.brand{display:flex;gap:.6rem;align-items:center;font-weight:800;letter-spacing:-.04em;font-size:1.15rem}.mark{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;background:var(--lime);color:#152000;font-size:1.3rem}.flag,.tag,.eyebrow{font:700 .68rem ui-monospace,monospace;text-transform:uppercase;letter-spacing:.1em}.flag,.tag{padding:.3rem .45rem;border-radius:5px}.flag{background:#223044;color:var(--blue)}.tag{background:#263342;color:#c5d2df;white-space:nowrap}.tag.good{background:#293924;color:var(--lime)}.eyebrow{color:var(--lime);margin-bottom:.6rem}.hero{position:relative;overflow:hidden;margin:20px 0 0;padding:clamp(23px,5vw,64px);border:1px solid #385274;border-radius:16px;background:radial-gradient(ellipse at 95% 20%,#274d73,transparent 62%),linear-gradient(125deg,#17283b,#142032);isolation:isolate}.hero:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(#9ccaff13 1px,transparent 1px),linear-gradient(90deg,#9ccaff13 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(90deg,transparent 28%,black)}h1{font-size:clamp(2.35rem,6.5vw,5.1rem);line-height:.99;letter-spacing:-.075em;margin-bottom:1rem;max-width:750px}.hero h1 span{color:var(--lime)}.hero p{max-width:570px;color:#ccdaea;margin-bottom:1.25rem}.primary{background:var(--lime);color:#1a250a;border-color:var(--lime);font-weight:800}.modes{display:flex;gap:.35rem;overflow:auto;margin:20px 0 14px;padding:4px 0}.modes button{white-space:nowrap}.modes button[aria-pressed=true]{color:var(--lime);background:#263723}.workspace{scroll-margin-top:12px}.dashboard{display:grid;gap:14px;margin:0 0 20px;align-items:start}.panel{padding:clamp(14px,2.5vw,24px);background:var(--panel);border:1px solid var(--edge);border-radius:13px;min-width:0}.between{justify-content:space-between}.muted,small{color:var(--muted)}small{line-height:1.4}.toolbar{flex-wrap:wrap;margin-bottom:10px}.toolbar input{flex:1;min-width:110px}.catalog{display:grid;gap:10px}.product{border:1px solid var(--edge);background:#141d29;border-radius:10px;overflow:hidden}.product-title{padding:10px 12px;background:#202d3d}.tile{height:39px;width:39px;flex:none;display:grid;place-items:center;background:#30445b;border-radius:8px;font-size:1.28rem}.product-title h3{margin:0}.offer,.cart-item,.service{display:flex;justify-content:space-between;align-items:center;gap:.45rem;padding:9px 11px;border-top:1px solid var(--edge)}.offer>div:first-child,.cart-item>div:first-child{min-width:0}.offer button,.cart-item button{padding:.35rem .55rem}.offer strong{margin-right:6px;font-variant-numeric:tabular-nums}.ghost{opacity:.7}.provider{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:750}.dot{width:8px;height:8px;border-radius:50%;background:var(--provider);flex:none}.cart-group{border-bottom:1px solid var(--edge);padding:12px 0}.cart-group .cart-item{padding-inline:0}.cart-group>small{display:block;margin:6px 0}.totals{padding:12px 0;font-variant-numeric:tabular-nums}.totals p{margin:0 0 .3rem}.full{width:100%}.total{font-weight:850;color:var(--fg);font-size:1.15rem}.notice{border-left:2px solid var(--blue);background:#1f3043;border-radius:0 7px 7px 0;padding:9px 11px;font-size:.83rem;color:#dbe9f8;margin:10px 0 0}.section{scroll-margin-top:12px;margin:22px 0}.fields,.architecture{display:grid;gap:12px}.fields label{display:grid;gap:5px;font-size:.9rem}.fields select,.fields input{width:100%}.days{display:flex;gap:5px;flex-wrap:wrap;margin:7px 0 13px}.days button{padding:.4rem .57rem}.days button[aria-pressed=true]{color:var(--lime);background:#283923}.actions{flex-wrap:wrap}.stack{display:grid;gap:12px}.service{padding-inline:0}.service:first-of-type{border-top:0}.scenario,.stage{border:1px solid var(--edge);background:#141e2a;border-radius:9px;padding:13px}.stage p,.scenario p{margin-bottom:0;font-size:.9rem}.stage b{color:var(--blue);font:700 .75rem ui-monospace,monospace}.detail{margin:12px 0 0}.footer{border-top:1px solid var(--edge);padding:18px 0 30px;color:var(--muted);font-size:.82rem}.checkout{position:fixed;inset:0;border:1px solid var(--edge);background:var(--panel);color:var(--fg);padding:20px;border-radius:13px;width:min(520px,100% - 30px);max-height:85vh;overflow:auto}.checkout::backdrop{background:#05080ddd}.receipt{padding:10px 0;border-bottom:1px solid var(--edge)}.empty{padding:10px 0;color:var(--muted)}[hidden]{display:none!important}@media(min-width:720px){.dashboard{grid-template-columns:minmax(0,1fr) minmax(290px,.55fr)}.fields,.architecture{grid-template-columns:repeat(2,minmax(0,1fr))}.cart-card{position:sticky;top:10px}}@media(min-width:1050px){.catalog{grid-template-columns:1fr 1fr}}@media(max-width:420px){.top select{max-width:132px}.head{gap:4px}.offer .tag{display:none}.head .flag{display:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap head"><a href="#top" class="brand"><span class="mark" aria-hidden="true">↯</span>QuickCompare</a><div class="line"><span class="flag">Interactive concept</span><select id="address" aria-label="Delivery address"><option value="home">⌂ Home · Borivali</option><option value="office">▦ Office · BKC</option></select></div></div></header>
+<main class="wrap" id="top">
+<section class="hero"><div class="eyebrow">Quick commerce, in one place</div><h1>Four delivery apps.<br><span>One basket.</span></h1><p>Find what each store actually carries for your address. Compare the offers, split an order across stores, and put repeat purchases on a schedule.</p><a class="primary" style="display:inline-block;padding:.7rem .9rem;border-radius:9px" href="#workspace">Try the workflow ↓</a></section>
+<nav class="modes" id="workspace" aria-label="Workflow"><button data-view="compare" aria-pressed="true">Compare & cart</button><button data-view="schedule" aria-pressed="false">Recurring orders</button><button data-view="connections" aria-pressed="false">Linked stores</button><button data-view="architecture" aria-pressed="false">Architecture</button></nav>
+<section id="view-compare" class="dashboard"><div class="panel"><div class="between"><h2>Compare products</h2><span class="tag">Sample data</span></div><p>Check stock and pack size at your chosen address. Each store has its own fees and delivery estimate.</p><div class="toolbar"><input id="search" type="search" placeholder="Search paneer, cables, soda…" aria-label="Search catalog"><select id="category" aria-label="Product category"><option value="all">All categories</option><option>Dairy & eggs</option><option>Electronics</option><option>Pantry</option><option>Drinks</option></select></div><div class="toolbar"><button id="mixed">Load mixed basket</button><button id="refresh">Refresh sample quotes</button></div><p id="quote" class="notice" role="status"></p><div style="height:12px"></div><div class="catalog" id="catalog"></div></div>
+<aside class="panel cart-card" aria-labelledby="cart-title"><div class="between"><h2 id="cart-title">Unified cart</h2><span class="tag" id="count"></span></div><small id="cart-address"></small><div id="cart"></div><button id="review" class="primary full" type="button" disabled>Review demo checkout</button><small style="display:block;margin-top:8px">Stores fulfill and charge their orders separately.</small></aside></section>
+<section id="view-schedule" class="dashboard" hidden><div class="panel"><h2>Recurring orders</h2><p>Schedule the full basket, including items from multiple stores. Choose where, when, and how you want to pay.</p><div class="toolbar"><button data-preset="breakfast">Breakfast essentials</button><button data-preset="office">Office soda</button><button data-preset="cart">Use current cart</button></div><div class="scenario" id="plan-items"></div><form id="schedule-form"><div class="fields" style="margin-top:13px"><label>Delivery address<select id="plan-address"><option value="home">Home · Borivali</option><option value="office">Office · BKC</option></select></label><label>Preferred delivery window<select id="window"><option>8:00–9:00 AM</option><option>12:00–1:00 PM</option><option>4:00–5:00 PM</option><option>7:00–8:00 PM</option></select></label><label>Payment preference<select id="payment"><option>Cash on delivery</option><option>Prepaid authorization</option></select></label><label>Maximum total per run (₹)<input type="number" id="cap" value="300" min="1" max="100000" required></label></div><div style="margin-top:13px">Delivery days</div><div class="days" id="days"></div><button class="primary" type="submit">Save demo schedule</button><p class="notice" id="plan-status" role="status">Times are preferred windows in IST. Store availability determines the actual ETA.</p></form></div><aside class="panel"><h2>Saved schedules</h2><div id="plans"></div><p class="notice">At run time the proposed service checks stock, the price cap, delivery ETA, account authorization, and payment eligibility. If any check fails, that store’s order waits for your decision.</p></aside></section>
+<section id="view-connections" class="dashboard" hidden><div class="panel"><h2>Linked stores</h2><p>Connect each store once. The proposed connection flow requests permission through the provider and shows the current status here.</p><div id="connections"></div><p class="notice">These controls simulate consent and revocation. This demo accepts no passwords, OTPs, cookies, or payment details.</p></div><aside class="panel"><h2>One address book</h2><p>Pick Home or Office from the header. A production connector would map that saved address to each store and confirm serviceability before quoting or submitting an order.</p></aside></section>
+<section id="view-architecture" class="panel section" hidden><div class="eyebrow">Proposed production architecture</div><h2>Two servers, with browsers opened on demand</h2><p>At 10,000 registered users and 100 active shoppers, size the browser pool by measured peak concurrency, including scheduled runs. One shopper can generate several provider jobs. The other sessions stay dormant as records.</p><div class="architecture"><article class="stage"><b>WEB APP → LIGHT VPS</b><h3>API, quote normalization, checkout review</h3><p>Accept the chosen address, match exact SKUs and pack sizes, and group normalized offers by store. Quote results include price, fees, stock, ETA and timestamp. The frontend receives structured updates as each store responds.</p></article><article class="stage"><b>JOB QUEUE → STRONG VPS</b><h3>On-demand provider jobs</h3><p>Containerized workers use authorized provider APIs where available. For a browser flow permitted by a provider, open an isolated context for its job and close it after idle timeout. Stream quote and order status events over a private, authenticated channel.</p></article><article class="stage"><b>POSTGRES + KEY MANAGEMENT</b><h3>Session and order state</h3><p>Keep addresses, schedules, quotes and order attempts in Postgres. Encrypt permitted session material with separately managed keys. Enforce tenant isolation and expiry, support revocation, and keep secrets out of events and logs.</p></article><article class="stage"><b>SCHEDULER → PER-STORE CHECKOUT</b><h3>Reprice before submitting</h3><p>Recheck every selected store at checkout or schedule time. Stop on changed quotes outside policy, missing stock, or invalid authorization. Deduplicate each store attempt, reconcile unknown results, and show placed, pending or failed orders individually.</p></article></div><p class="detail"><strong>Commercial model.</strong> A QuickCompare subscription could cover recurring-order management and comparison. Stores still set delivery fees, thresholds and payment options. Partner permission, checkout terms, refunds, and a supported prepaid mandate are launch dependencies.</p></section>
+</main>
+<footer class="footer"><div class="wrap">QuickCompare concept · Sample prices, stock and fees. No live accounts, payments or deliveries.</div></footer>
+<dialog class="checkout" id="checkout" aria-labelledby="checkout-title"><div class="between"><h2 id="checkout-title">Review demo checkout</h2><button id="close" aria-label="Close checkout">✕</button></div><div id="receipt"></div><div class="actions" id="checkout-actions" style="margin-top:12px"></div></dialog>
+<script>
+const $ = id => document.getElementById(id);
+const stores = {
+  blinkit: ['Blinkit','#f9d622',199,35,6,9], zepto: ['Zepto','#c483ff',299,29,7,11],
+  bigbasket: ['BigBasket','#b7db68',399,39,5,17], instamart: ['Instamart','#ff9570',249,32,6,13]
+};
+const catalog = [
+  ['paneer','Fresh paneer','200 g','Dairy & eggs','🧀',{blinkit:105,zepto:109,instamart:99}],
+  ['curd','Plain curd','400 g','Dairy & eggs','🥣',{zepto:52,bigbasket:48,instamart:49}],
+  ['eggs','Eggs','6 pcs','Dairy & eggs','🥚',{blinkit:74,bigbasket:70,instamart:72}],
+  ['cable','USB-C charging cable','1 m','Electronics','🔌',{blinkit:279}],
+  ['rice','Basmati rice','1 kg','Pantry','🌾',{bigbasket:149,zepto:169}],
+  ['soda','Lime soda','330 ml','Drinks','🥤',{blinkit:39,zepto:35,instamart:37}]
+];
+const presets = {
+  breakfast: {items:{'paneer:instamart':1,'curd:instamart':1,'eggs:instamart':1},address:'home',window:'8:00–9:00 AM',days:[0,1,2,3,4,5,6],cap:300},
+  office: {items:{'soda:zepto':4},address:'office',window:'4:00–5:00 PM',days:[0,1,2,3],cap:250}
+};
+const weekdays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let address='home', basket={}, linked=new Set(), revision=0, verified=false, preset='breakfast', days=new Set(presets.breakfast.days), plans=[];
+const money = amount => `₹${amount.toLocaleString('en-IN')}`;
+const locationName = key => key==='home' ? 'Home · Borivali' : 'Office · BKC';
+const product = key => catalog.find(row=>row[0]===key);
+const provider = key => `<span class="provider"><span class="dot" style="--provider:${stores[key][1]}"></span>${stores[key][0]}</span>`;
+function price(productKey,store,place=address) {
+  const base=product(productKey)[5][store];
+  if(base===undefined || (place==='office' && productKey==='eggs' && store==='instamart')) return null;
+  return base + (place==='office'?3:0) + (productKey==='paneer' && store==='instamart' && revision%2 ? 8 : 0);
+}
+function updateBasket(key,delta) {
+  const next=(basket[key]||0)+delta;
+  if(next>0) basket[key]=Math.min(next,30); else delete basket[key];
+  verified=false;
+  render();
+}
+function summarize(items,place=address) {
+  const groups={};
+  for(const [key,qty] of Object.entries(items)) {
+    const [id,store]=key.split(':');
+    const unit=price(id,store,place);
+    const group=groups[store] ??= {rows:[],subtotal:0,unavailable:0};
+    group.rows.push({key,id,qty,unit});
+    if(unit===null) group.unavailable++; else group.subtotal+=unit*qty;
+  }
+  for(const [store,group] of Object.entries(groups)) {
+    const [, , threshold, delivery, handling]=stores[store];
+    group.remaining=Math.max(0,threshold-group.subtotal);
+    group.delivery=group.remaining?delivery:0;
+    group.handling=handling;
+    group.total=group.subtotal+group.delivery+handling;
+  }
+  return groups;
+}
+function renderCatalog() {
+  const query=$('search').value.trim().toLowerCase(), category=$('category').value;
+  const results=catalog.filter(([,name,size,type])=>(category==='all'||type===category)&&`${name} ${size} ${type}`.toLowerCase().includes(query));
+  $('catalog').innerHTML=results.map(([id,name,size,type,icon])=>{
+    const options=Object.keys(stores).map(store=>[store,price(id,store)]);
+    const available=options.filter(([,value])=>value!==null).sort((a,b)=>a[1]-b[1]);
+    return `<article class="product"><div class="line product-title"><span class="tile" aria-hidden="true">${icon}</span><div><h3>${name}</h3><small>${size} · ${type}</small></div></div>${available.map(([store,value],i)=>`<div class="offer"><div>${provider(store)}<br><small>~${stores[store][5]+(address==='office'?3:0)} min</small></div><div><strong>${money(value)}</strong>${i===0&&available.length>1?'<span class="tag good">Lowest item price</span> ':''}<button data-add="${id}:${store}" aria-label="Add ${name} from ${stores[store][0]}">Add</button></div></div>`).join('')}<div class="offer ghost"><small>Unavailable here: ${options.filter(([,value])=>value===null).map(([store])=>stores[store][0]).join(', ')||'none'}</small></div></article>`;
+  }).join('')||'<p class="empty">No products match this search.</p>';
+}
+function renderCart() {
+  const groups=Object.entries(summarize(basket)), count=Object.values(basket).reduce((a,b)=>a+b,0);
+  const total=groups.reduce((sum,[,g])=>sum+g.total,0), hasUnavailable=groups.some(([,g])=>g.unavailable);
+  $('count').textContent=`${count} ${count===1?'item':'items'}`;
+  $('cart-address').textContent=`Delivering to ${locationName(address)}`;
+  $('cart').innerHTML=groups.length?groups.map(([store,g])=>`<div class="cart-group"><div class="between">${provider(store)}<strong>${money(g.total)}</strong></div>${g.rows.map(row=>`<div class="cart-item"><div>${product(row.id)[1]}<br><small>${row.unit===null?'Unavailable at this address':`${row.qty} × ${money(row.unit)}`}</small></div><div class="line"><button data-remove="${row.key}" aria-label="Remove one ${product(row.id)[1]}">−</button><button data-add="${row.key}" aria-label="Add one ${product(row.id)[1]}" ${row.unit===null?'disabled':''}>+</button></div></div>`).join('')}<small>Items ${money(g.subtotal)} · Delivery ${money(g.delivery)} · Handling ${money(g.handling)}</small><small>${g.remaining?`${money(g.remaining)} more at ${stores[store][0]} for free delivery`:'Free delivery unlocked · Handling still applies'}</small></div>`).join('')+`<div class="totals"><p class="between total"><span>Estimated total</span><span>${money(total)}</span></p><small>${groups.length} separate ${groups.length===1?'order':'orders'}${hasUnavailable?' · Remove unavailable items to continue':''}</small></div>`:'<p class="empty">Add an offer or load the mixed basket.</p>';
+  $('review').disabled=!groups.length||hasUnavailable;
+}
+function render() {renderCatalog();renderCart();renderPlanItems();}
+function setQuote(message) {$('quote').textContent=message;}
+function refreshQuotes() {
+  revision++; verified=true; render();
+  setQuote(`Sample quotes refreshed at ${new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'2-digit'})} IST. Instamart paneer is now ${money(price('paneer','instamart'))}.`);
+}
+function showView(name) {
+  document.querySelectorAll('[data-view]').forEach(button=>{
+    const active=button.dataset.view===name;
+    button.setAttribute('aria-pressed',active);
+    $(`view-${button.dataset.view}`).hidden=!active;
+  });
+}
+function renderConnections() {
+  $('connections').innerHTML=Object.keys(stores).map(store=>`<div class="service">${provider(store)}<small>${linked.has(store)?'Demo linked':'Disconnected'}</small><button data-link="${store}">${linked.has(store)?'Disconnect':'Link demo account'}</button></div>`).join('');
+}
+function planItems() {return preset==='cart'?basket:presets[preset].items;}
+function renderPlanItems() {
+  $('plan-items').innerHTML=Object.entries(planItems()).map(([key,qty])=>{
+    const [id,store]=key.split(':'); const [,name,size]=product(id);
+    return `<div class="between"><span>${qty} × ${name} <small>${size}</small></span>${provider(store)}</div>`;
+  }).join('')||'Your cart is empty. Add products in Compare & cart.';
+}
+function renderDays() {
+  $('days').innerHTML=weekdays.map((day,i)=>`<button type="button" data-day="${i}" aria-pressed="${days.has(i)}">${day}</button>`).join('');
+}
+function setPreset(next) {
+  preset=next;
+  document.querySelectorAll('[data-preset]').forEach(button=>button.setAttribute('aria-pressed',button.dataset.preset===preset));
+  const config=presets[next];
+  if(config) {
+    $('plan-address').value=config.address; $('window').value=config.window; $('cap').value=config.cap; days=new Set(config.days);
+  } else $('plan-address').value=address;
+  $('plan-status').textContent='Times are preferred windows in IST. Store availability determines the actual ETA.';
+  renderPlanItems();renderDays();
+}
+function renderPlans() {
+  $('plans').innerHTML=plans.map(p=>`<article class="receipt"><div class="between"><h3>${p.name}</h3><span class="tag ${p.paused?'':'good'}">${p.paused?'Paused':'Active demo'}</span></div><small>${p.days.join(', ')} · ${p.window} IST<br>${locationName(p.place)} · ${p.payment} · cap ${money(p.cap)}</small><div class="actions" style="margin-top:8px"><button data-toggle="${p.id}">${p.paused?'Resume':'Pause'}</button><button data-run="${p.id}" ${p.paused?'disabled':''}>Simulate next run</button></div><div id="run-${p.id}" role="status" class="notice" ${p.result?'':'hidden'}>${p.result||''}</div></article>`).join('')||'<p class="empty">Build a schedule to see it here.</p>';
+}
+function simulateRun(id) {
+  const plan=plans.find(p=>p.id===id);
+  const groups=Object.entries(summarize(plan.items,plan.place));
+  const estimate=groups.reduce((sum,[,g])=>sum+g.total,0);
+  plan.result=estimate>plan.cap
+    ? `On hold · ${money(estimate)} exceeds your ${money(plan.cap)} cap.`
+    : groups.map(([store,g])=>{
+      let result='Order simulated';
+      if(g.unavailable)result='On hold · item unavailable';
+      else if(!linked.has(store))result='On hold · link demo account';
+      return `${stores[store][0]} · ${result}`;
+    }).join('<br>');
+  const status=$(`run-${id}`);
+  status.hidden=false;
+  status.innerHTML=plan.result;
+}
+function reviewCheckout() {
+  const groups=Object.entries(summarize(basket));
+  let changed='';
+  if(!verified) {
+    const before=groups.reduce((total,[,g])=>total+g.total,0);
+    refreshQuotes();
+    const after=Object.values(summarize(basket)).reduce((total,g)=>total+g.total,0);
+    if(after!==before) changed=`<p class="notice">Checkout recheck changed the total from ${money(before)} to ${money(after)}. Review the updated amount before confirming.</p>`;
+  }
+  const updated=Object.entries(summarize(basket)), unlinked=updated.filter(([store])=>!linked.has(store));
+  $('receipt').innerHTML=`<p>Deliver to ${locationName(address)}</p>${changed}${updated.map(([store,g])=>`<div class="receipt between"><div>${provider(store)}<br><small>${linked.has(store)?'Demo linked':'Demo link required'} · ~${stores[store][5]+(address==='office'?3:0)} min</small></div><strong>${money(g.total)}</strong></div>`).join('')}<p class="between total" style="margin-top:12px"><span>Total</span><span>${money(updated.reduce((sum,[,g])=>sum+g.total,0))}</span></p>`;
+  $('checkout-actions').innerHTML=unlinked.length?'<button class="primary" id="go-link">Go to linked stores</button>':'<button class="primary" id="confirm">Simulate placing orders</button>';
+  $('checkout').showModal();
+}
+document.addEventListener('click',event=>{
+  const button=event.target.closest('button'); if(!button)return;
+  const d=button.dataset;
+  if(d.view)showView(d.view);
+  if(d.add)updateBasket(d.add,1);
+  if(d.remove)updateBasket(d.remove,-1);
+  if(d.link) {if(linked.has(d.link)) linked.delete(d.link); else linked.add(d.link);renderConnections();}
+  if(d.preset)setPreset(d.preset);
+  if(d.day!==undefined) {const day=Number(d.day); if(days.has(day))days.delete(day);else days.add(day);renderDays();$('days').querySelector(`[data-day="${day}"]`).focus();}
+  if(d.toggle!==undefined) {const plan=plans.find(p=>p.id===Number(d.toggle));plan.paused=!plan.paused;renderPlans();$('plans').querySelector(`[data-toggle="${plan.id}"]`).focus();}
+  if(d.run!==undefined)simulateRun(Number(d.run));
+  if(button.id==='go-link') { $('checkout').close();showView('connections');$('workspace').scrollIntoView(); }
+  if(button.id==='confirm') {
+    const names=Object.keys(summarize(basket)).map(store=>stores[store][0]);basket={};verified=false;render();
+    $('receipt').innerHTML=`<p class="notice">Demo complete. ${names.map(name=>`<br>${name} · simulated confirmation`).join('')}<br>No real orders were sent.</p>`;
+    $('checkout-actions').replaceChildren();$('close').focus();
+  }
+});
+$('schedule-form').addEventListener('submit',event=>{
+  event.preventDefault();
+  const place=$('plan-address').value, groups=Object.values(summarize(planItems(),place));
+  const cap=Number($('cap').value);
+  if(!days.size||!groups.length) {$('plan-status').textContent='Choose at least one day and one item.';return;}
+  if(groups.some(g=>g.unavailable)) {$('plan-status').textContent='Some items are unavailable at this address. Change the address or edit your basket.';return;}
+  const estimate=groups.reduce((sum,g)=>sum+g.total,0);
+  if(estimate>cap) {$('plan-status').textContent=`This basket currently estimates ${money(estimate)}. Raise the cap or adjust the basket.`;return;}
+  plans.push({id:plans.length,name:{breakfast:'Breakfast essentials',office:'Office soda',cart:'Custom basket'}[preset],items:{...planItems()},days:[...days].sort().map(i=>weekdays[i]),window:$('window').value,place,payment:$('payment').value,cap,paused:false});
+  renderPlans();$('plan-status').textContent=`Schedule saved for this demo session. Current estimate ${money(estimate)} per run.`;
+});
+$('address').addEventListener('change',event=>{address=event.target.value;verified=false;render();setQuote(`Showing sample offers for ${locationName(address)}. Stock, ETA and prices can change by address.`);});
+$('search').addEventListener('input',renderCatalog);
+$('category').addEventListener('change',renderCatalog);
+$('mixed').addEventListener('click',()=>{basket={'cable:blinkit':1,'rice:bigbasket':1,'paneer:instamart':1,'curd:instamart':1};verified=false;render();});
+$('refresh').addEventListener('click',refreshQuotes);
+$('review').addEventListener('click',reviewCheckout);
+$('close').addEventListener('click',()=>$('checkout').close());
+setQuote('Sample catalog snapshot. Refresh quotes or try checkout to see a simulated price change.');
+setPreset('breakfast');render();renderConnections();renderPlans();
+const jump=document.createElement('a');
+jump.href='#cart-title';jump.className='flag';jump.style.padding='.85rem .55rem';jump.textContent='Jump to cart ↓';
+$('mixed').parentElement.append(jump);
+</script>
+</body>
+</html>
