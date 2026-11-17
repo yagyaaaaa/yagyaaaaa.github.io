@@ -36,12 +36,15 @@
     <div class="toolbar"><button id="list-example" class="primary">Try a sample list</button><button id="list-import">Copy from my cart</button><button id="list-clear">Clear list</button></div>
     <div class="toolbar"><input id="list-search" type="search" placeholder="Find a product…" aria-label="Search products for your list"></div>
     <p id="list-feedback" class="results-meta" role="status"></p>
+    <button id="list-undo" hidden>Undo clear</button>
     <div id="list-products" class="stack"></div>
     <a href="#comparison-title" id="result-jump" class="cart-jump">See cart prices ↓</a>
   </div>
   <aside class="panel result-panel" aria-labelledby="comparison-title">
     <h2 id="comparison-title">Compare cart totals</h2>
     <p id="result-address"></p>
+    <div class="toolbar"><button id="refresh-cart">Refresh sample prices</button></div>
+    <p id="cart-refresh-status" class="results-meta" role="status">Sample prices · Refresh to try a price change.</p>
     <p id="replace-note" class="results-meta" hidden>Choosing a result replaces the items in your checkout cart.</p>
     <div id="results"></div>
   </aside>
@@ -93,7 +96,19 @@ const weekdays=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 let address='home', basket={}, linked=new Set(), revision=0, verified=false, preset='breakfast', days=new Set(presets.breakfast.days), plans=[];
 const listStorageKey='quickcompare.shopping-list.v1';
 const storeKeys=Object.keys(stores);
-let shoppingList=readList(), cartOptions=[];
+let shoppingList=readList(), cartOptions=[], previousList=null;
+const preferences=readPreferences();
+address=preferences.address;
+function readPreferences() {
+  try {
+    const saved=JSON.parse(localStorage.getItem('quickcompare.preferences.v1'));
+    return {address:saved?.address==='office'?'office':'home',view:['compare','basket','schedule','connections','architecture'].includes(saved?.view)?saved.view:'compare'};
+  } catch {return {address:'home',view:'compare'};}
+}
+function savePreferences(view=preferences.view) {
+  preferences.view=view;
+  try {localStorage.setItem('quickcompare.preferences.v1',JSON.stringify({address,view}));} catch {}
+}
 const money = amount => `₹${amount.toLocaleString('en-IN')}`;
 const locationName = key => key==='home' ? 'Home · Borivali' : 'Office · BKC';
 const product = key => catalog.find(row=>row[0]===key);
@@ -242,8 +257,10 @@ function setQuote(message) {$('quote').textContent=message;}
 function refreshQuotes() {
   revision++; verified=true; render();
   setQuote(`Sample quotes refreshed at ${new Date().toLocaleTimeString('en-IN',{timeZone:'Asia/Kolkata',hour:'numeric',minute:'2-digit'})} IST. Instamart paneer is now ${money(price('paneer','instamart'))}.`);
+  $('cart-refresh-status').textContent=$('quote').textContent;
 }
 function showView(name) {
+  savePreferences(name);
   document.querySelectorAll('[data-view]').forEach(button=>{
     const active=button.dataset.view===name;
     button.setAttribute('aria-pressed',active);
@@ -351,11 +368,19 @@ $('schedule-form').addEventListener('submit',event=>{
   plans.push({id:plans.length,name:{breakfast:'Breakfast essentials',office:'Office soda',cart:'Custom basket'}[preset],items:{...planItems()},days:[...days].sort().map(i=>weekdays[i]),window:$('window').value,place,payment:$('payment').value,cap,paused:false});
   renderPlans();$('plan-status').textContent=`Schedule saved for this demo session. Current estimate ${money(estimate)} per run.`;
 });
-$('address').addEventListener('change',event=>{address=event.target.value;verified=false;render();setQuote(`Showing sample offers for ${locationName(address)}. Stock, ETA and prices can change by address.`);});
+$('address').addEventListener('change',event=>{address=event.target.value;savePreferences();verified=false;render();setQuote(`Showing sample offers for ${locationName(address)}. Stock, ETA and prices can change by address.`);$('cart-refresh-status').textContent=$('quote').textContent;});
 $('search').addEventListener('input',renderCatalog);
 $('category').addEventListener('change',renderCatalog);
 $('list-search').addEventListener('input',renderListProducts);
-$('list-clear').addEventListener('click',()=>{shoppingList={};saveList('List cleared.');$('list-example').focus();});
+$('list-clear').addEventListener('click',()=>{
+  previousList={...shoppingList};shoppingList={};
+  saveList('List cleared. You can undo this.');
+  $('list-undo').hidden=false;$('list-undo').focus();
+});
+$('list-undo').addEventListener('click',()=>{
+  if(previousList){shoppingList=previousList;previousList=null;saveList('Previous list restored.');}
+  $('list-undo').hidden=true;$('list-clear').focus();
+});
 $('list-import').addEventListener('click',()=>{
   shoppingList={};
   for(const [key,qty] of Object.entries(basket)) {
@@ -398,6 +423,7 @@ $('start-example').addEventListener('click',()=>{
 $('browse').addEventListener('click',()=>showView('compare'));
 $('try-breakfast').addEventListener('click',()=>{showView('schedule');setPreset('breakfast');goTo('workspace');});
 $('refresh').addEventListener('click',refreshQuotes);
+$('refresh-cart').addEventListener('click',refreshQuotes);
 $('review').addEventListener('click',reviewCheckout);
 $('close').addEventListener('click',()=>$('checkout').close());
 const jump=document.createElement('a');
@@ -405,7 +431,9 @@ jump.id='cart-jump';jump.href='#cart-title';jump.className='cart-jump';
 jump.addEventListener('click',event=>{event.preventDefault();goTo('cart-title');});
 $('mixed').parentElement.append(jump);
 setQuote('Try adding an item or opening the sample basket. At checkout you’ll see what happens when a store changes its price.');
+$('address').value=address;
 setPreset('breakfast');render();renderConnections();renderPlans();
+showView(preferences.view);
 </script>
 </body>
 </html>
